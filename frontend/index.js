@@ -1,12 +1,14 @@
 const BASE_URL = "http://localhost:3000";
 const PICTURES_URL = `${BASE_URL}/pictures`;
+const PICTURES = [];
 
-//document.addEventListener("DOMContentLoaded", function() {
-//  //loadMeme();
-//});
+document.addEventListener("DOMContentLoaded", function() {
+  loadPictures();
+});
 
 class Picture {
-  constructor(title, link) {
+  constructor(id, title, link) {
+    this.id = id;
     this.title = title;
     this.link = link;
   }
@@ -28,12 +30,19 @@ class Meme {
   }
 }
 
+function loadPictures() {
+  fetch(`${PICTURES_URL}`)
+    .then(resp => resp.json())
+    .then(json => {
+      for (let i = 0; i < json.length; i++){
+        PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
+      }
+    });
+}
+
 /*******************************************
  * Below are rough functions to test functionality
  *******************************************/
-function getData() {
-  return fetch(`${PICTURES_URL}/2`).then(resp => resp.json());
-}
 
 function loadMeme() {
   let memeSpace = document.getElementById("content");
@@ -41,7 +50,8 @@ function loadMeme() {
   imgDiv.setAttribute("class", "img-div");
   let meme = document.createElement("img");
   meme.setAttribute("class", "img");
-  fetch(`${PICTURES_URL}/12`)
+  let randNum = Math.floor(Math.random() * 12);
+  fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
     .then(resp => resp.json())
     .then(json => {
       meme.setAttribute("src", `${json.link}`);
