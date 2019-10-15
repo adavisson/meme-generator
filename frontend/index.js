@@ -1,15 +1,38 @@
 const BASE_URL = "http://localhost:3000";
-const PICTURES_URL = `${BASE_URL}/pictures`
+const PICTURES_URL = `${BASE_URL}/pictures`;
 
-let image;
+//document.addEventListener("DOMContentLoaded", function() {
+//  //loadMeme();
+//});
 
-document.addEventListener("DOMContentLoaded", function() {
-  //loadMeme();
-});
+class Picture {
+  constructor(title, link) {
+    this.title = title;
+    this.link = link;
+  }
+}
 
+class Phrase {
+  constructor(content, color = "000000") {
+    this.content = content;
+    this.color = `#${color}`;
+  }
+}
+
+class Meme {
+  constructor(title, picture, phrase, phrase_position) {
+    this.title = title;
+    this.picture = picture; // picture object
+    this.phrase = phrase; // phrase object
+    this.phrase_position = phrase_position; // 1 = top, 2 = bottom
+  }
+}
+
+/*******************************************
+ * Below are rough functions to test functionality
+ *******************************************/
 function getData() {
-  return fetch(`${PICTURES_URL}/2`)
-  .then(resp => resp.json())
+  return fetch(`${PICTURES_URL}/2`).then(resp => resp.json());
 }
 
 function loadMeme() {
@@ -17,7 +40,7 @@ function loadMeme() {
   let imgDiv = document.createElement("div");
   imgDiv.setAttribute("class", "img");
   let meme = document.createElement("img");
-  fetch(`${PICTURES_URL}/2`)
+  fetch(`${PICTURES_URL}/12`)
     .then(resp => resp.json())
     .then(json => {
       meme.setAttribute("src", `${json.link}`);
@@ -37,7 +60,7 @@ function loadMeme() {
 
 function deleteMeme() {
   let memeSpace = document.getElementById("content");
-  while(memeSpace.firstChild) {
+  while (memeSpace.firstChild) {
     memeSpace.removeChild(memeSpace.firstChild);
   }
   memeSpace.removeAttribute("class");
