@@ -18,3 +18,5 @@ Picture.create(title: "Third World Skeptical Kid", link: "https://imgflip.com/s/
 Picture.create(title: "Success Kid", link: "https://imgflip.com/s/meme/Success-Kid.jpg")
 Picture.create(title: "Creepy Condescending Wonka", link: "https://imgflip.com/s/meme/Creepy-Condescending-Wonka.jpg")
 Picture.create(title: "Shut Up and Take My Money Fry", link: "https://imgflip.com/s/meme/Shut-Up-And-Take-My-Money-Fry.jpg")
+
+Phrase.create(content: "Sample Phrase");

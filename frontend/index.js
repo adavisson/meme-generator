@@ -13,40 +13,12 @@ class Picture {
     this.title = title;
     this.link = link;
   }
-
-  get id() {
-    return this.id;
-  }
-
-  get title(){
-    return this.title;
-  }
-
-  get link(){
-    return this.link;
-  }
 }
 
 class Phrase {
   constructor(content, color = "000000") {
     this.content = content;
     this.color = `#${color}`;
-  }
-
-  get content(){
-    return this.content;
-  }
-
-  set content(con){
-    this.content = con;
-  }
-
-  get color(){
-    return this.color;
-  }
-
-  set color(col){
-    this.color = col;
   }
 }
 
@@ -83,7 +55,7 @@ function loadMeme() {
   meme.setAttribute("class", "img");
   imgDiv.appendChild(meme);
 
-  let randNum = Math.floor(Math.random() * 12);
+  let randNum = Math.floor(Math.random() * PICTURES.length);
   fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
     .then(resp => resp.json())
     .then(json => {
