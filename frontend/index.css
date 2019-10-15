@@ -19,13 +19,13 @@ header h2 {
 .meme-space {
   padding-top: 10px;
   padding-bottom: 30px;
-  border-top-style:dotted;
-  border-bottom-style:dotted;
-  border-left-style:dotted;
-  border-right-style:dotted;
-  border-width:18px;
-  border-color:rgb(3, 252, 57);
-  padding:6px;
+  border-top-style: dotted;
+  border-bottom-style: dotted;
+  border-left-style: dotted;
+  border-right-style: dotted;
+  border-width: 18px;
+  border-color: rgb(3, 252, 57);
+  padding: 6px;
   margin: 10px;
 }
 
@@ -40,6 +40,18 @@ header h2 {
 }
 
 .img {
+  max-width: 50%;
+  height: auto;
   margin: 10px;
   padding: 10px;
+}
+
+.img-div {
+  min-width: 120px;
+  max-width: 100%;
+  min-height: 120px;
+  max-height: auto;
+  text-align: center;
+  margin: 5px;
+  padding: 5px;
 }

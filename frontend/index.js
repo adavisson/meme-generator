@@ -38,8 +38,9 @@ function getData() {
 function loadMeme() {
   let memeSpace = document.getElementById("content");
   let imgDiv = document.createElement("div");
-  imgDiv.setAttribute("class", "img");
+  imgDiv.setAttribute("class", "img-div");
   let meme = document.createElement("img");
+  meme.setAttribute("class", "img");
   fetch(`${PICTURES_URL}/12`)
     .then(resp => resp.json())
     .then(json => {
