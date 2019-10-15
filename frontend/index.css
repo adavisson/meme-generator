@@ -38,3 +38,8 @@ header h2 {
 .btn-primary {
   background-color: rgb(155, 7, 253);
 }
+
+.img {
+  margin: 10px;
+  padding: 10px;
+}
