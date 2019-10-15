@@ -1,5 +1,6 @@
 const BASE_URL = "http://localhost:3000";
 const PICTURES_URL = `${BASE_URL}/pictures`;
+const CONTENT_DIV = document.getElementById("content");
 const PICTURES = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -12,12 +13,40 @@ class Picture {
     this.title = title;
     this.link = link;
   }
+
+  get id() {
+    return this.id;
+  }
+
+  get title(){
+    return this.title;
+  }
+
+  get link(){
+    return this.link;
+  }
 }
 
 class Phrase {
   constructor(content, color = "000000") {
     this.content = content;
     this.color = `#${color}`;
+  }
+
+  get content(){
+    return this.content;
+  }
+
+  set content(con){
+    this.content = con;
+  }
+
+  get color(){
+    return this.color;
+  }
+
+  set color(col){
+    this.color = col;
   }
 }
 
@@ -45,34 +74,38 @@ function loadPictures() {
  *******************************************/
 
 function loadMeme() {
-  let memeSpace = document.getElementById("content");
+  deleteMeme();   // clear meme if present
+
   let imgDiv = document.createElement("div");
   imgDiv.setAttribute("class", "img-div");
+
   let meme = document.createElement("img");
   meme.setAttribute("class", "img");
+  imgDiv.appendChild(meme);
+
   let randNum = Math.floor(Math.random() * 12);
   fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
     .then(resp => resp.json())
     .then(json => {
       meme.setAttribute("src", `${json.link}`);
     });
+
   let deleteButton = document.createElement("button");
   deleteButton.innerHTML = "Get outta here!";
   deleteButton.setAttribute("class", "btn btn-primary");
   deleteButton.addEventListener("click", e => {
     deleteMeme();
   });
-  memeSpace.style.textAlign = "center";
-  memeSpace.setAttribute("class", "meme-space");
-  imgDiv.appendChild(meme);
-  memeSpace.appendChild(imgDiv);
-  memeSpace.appendChild(deleteButton);
+
+  //CONTENT_DIV.style.textAlign = "center";
+  CONTENT_DIV.setAttribute("class", "meme-space");
+  CONTENT_DIV.appendChild(imgDiv);
+  CONTENT_DIV.appendChild(deleteButton);
 }
 
 function deleteMeme() {
-  let memeSpace = document.getElementById("content");
-  while (memeSpace.firstChild) {
-    memeSpace.removeChild(memeSpace.firstChild);
+  while (CONTENT_DIV.firstChild) {
+    CONTENT_DIV.removeChild(CONTENT_DIV.firstChild);
   }
-  memeSpace.removeAttribute("class");
+  CONTENT_DIV.removeAttribute("class");
 }
