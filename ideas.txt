@@ -1,0 +1,57 @@
+Meme Generator:
+  - Have 10 - 15 images to pull from
+  - User can choose phrase
+  - Phrase can be saved for later selection(saved to user if need logins)
+  - Meme can be made public for others to use
+  - Do not actually save the meme as a new image
+  - Models:
+    - Meme: belongs_to :phrase, belongs_to :picture
+      - title -> string
+      - phrase_position -> string
+      - phrase_id -> integer
+      - picture_id -> integer
+    - Phrase: has_many :memes, has_many :pictures through: :memes
+      - content -> string
+      - JS class will have color
+    - Picture: has_many :memes, has_many :phrases through: :memes
+      - title -> string
+      - link -> string
+
+Text based adventure game:
+  - User makes choices and game reacts to those choices
+  - Certain actions could cause certain DOM events (ie. earthquake = screen shake, hit in head = text goes fuzzy)
+
+
+For Project Meeting
+-----------------------
+What will your three AJAX calls do?
+(You must use at least two of the four CRUD actions - create, read, update, delete. And you must utilize the fetch API. You may have more than 3 AJAX calls, but 3 is the minimum.)
+1st AJAX call:  Fetch phrases
+2nd AJAX call:  Create phrases
+3rd AJAX call:  Fetch Memes
+
+How will you include a resource with at least one has_many relationship via JavaScript & JSON?
+
+What is meant by JavaScript Model Objects and how will you implement them in your application?
+- Would have meme objects so that the program can have more condensed and specialized functions/methods
+
+
+Questions
+-----------
+How would you used JS classes with Ruby models? Do you duplicate them?
+
+
+Popular Meme links
+--------------------
+Distracted Boyfriend - https://imgflip.com/s/meme/Distracted-Boyfriend.jpg
+Mocking Spongebob - https://imgflip.com/s/meme/Mocking-Spongebob.jpg
+Roll Safe Think About It - https://imgflip.com/s/meme/Roll-Safe-Think-About-It.jpg
+Surprised Pikachu - https://imgflip.com/s/meme/Surprised-Pikachu.jpg
+Is this a Pigeon - https://imgflip.com/s/meme/Is-This-A-Pigeon.jpg
+Ancient Aliens - https://imgflip.com/s/meme/Ancient-Aliens.jpg
+X, X Everywhere - https://imgflip.com/s/meme/X-X-Everywhere.jpg
+One Does Not Simply - https://imgflip.com/s/meme/One-Does-Not-Simply.jpg
+Third World Skeptical Kid - https://imgflip.com/s/meme/Third-World-Skeptical-Kid.jpg
+Success Kid - https://imgflip.com/s/meme/Success-Kid.jpg
+Creepy Condescending Wonka - https://imgflip.com/s/meme/Creepy-Condescending-Wonka.jpg
+Shut Up and Take My Money Fry - https://imgflip.com/s/meme/Shut-Up-And-Take-My-Money-Fry.jpg

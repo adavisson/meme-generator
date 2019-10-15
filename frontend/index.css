@@ -1,0 +1,40 @@
+body {
+  background-color: rgb(245, 178, 151);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  /*background-color: #4caf50;*/
+  background-image: url("https://cdn.dribbble.com/users/5019/screenshots/129326/shot_1299896380.jpg");
+  margin: 0 auto;
+  height: 50px;
+}
+
+header h2 {
+  padding: 10px;
+  margin: 0;
+}
+
+.meme-space {
+  padding-top: 10px;
+  padding-bottom: 30px;
+  border-top-style:dotted;
+  border-bottom-style:dotted;
+  border-left-style:dotted;
+  border-right-style:dotted;
+  border-width:18px;
+  border-color:rgb(3, 252, 57);
+  padding:6px;
+  margin: 10px;
+}
+
+#selections {
+  margin: 10px;
+  padding: 0;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: rgb(155, 7, 253);
+}
