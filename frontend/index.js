@@ -74,6 +74,18 @@ function loadForm() {
   memeForm.appendChild(document.createElement("br"));
   memeForm.appendChild(document.createElement("br"));
 
+  const phraseLabel = document.createElement("label");  // Create label for phrase input
+  phraseLabel.innerHTML = "Phill in a Phrase: &nbsp";
+  memeForm.appendChild(phraseLabel);
+
+  const phraseInput = document.createElement("input");  // Create phrase input element
+  phraseInput.setAttribute("type", "text");
+  phraseInput.setAttribute("class", "text-input");
+  memeForm.appendChild(phraseInput);
+
+  memeForm.appendChild(document.createElement("br"));
+  memeForm.appendChild(document.createElement("br"));
+
   const generateMemeButton = document.createElement("input");   // Create submit button
   generateMemeButton.setAttribute("type", "submit");
   generateMemeButton.setAttribute("value", "Meme It!");

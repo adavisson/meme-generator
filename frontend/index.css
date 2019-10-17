@@ -67,3 +67,7 @@ header h2 {
   margin: 5px;
   padding: 5px;
 }
+
+.text-input {
+  width: 25%;
+}
