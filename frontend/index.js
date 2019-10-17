@@ -1,10 +1,12 @@
 const BASE_URL = "http://localhost:3000";
 const PICTURES_URL = `${BASE_URL}/pictures`;
 const CONTENT_DIV = document.getElementById("content");
+const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
 
 document.addEventListener("DOMContentLoaded", function() {
   loadPictures();
+  //loadForm();
 });
 
 class Picture {
@@ -35,34 +37,85 @@ function loadPictures() {
   fetch(`${PICTURES_URL}`)
     .then(resp => resp.json())
     .then(json => {
-      for (let i = 0; i < json.length; i++){
+      for (let i = 0; i < json.length; i++) {
         PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
       }
-    });
+    })
+    .then(loadForm);
+}
+
+function loadForm() {
+  const memeForm = document.createElement("form");
+  memeForm.setAttribute("action", `${PICTURES_URL}`);
+  memeForm.setAttribute("method", "POST");
+
+  memeForm.addEventListener("submit", e => loadMeme(e));
+
+  const picLabel = document.createElement("label");
+  picLabel.innerHTML = "Pick a Pic: &nbsp";
+  memeForm.appendChild(picLabel);
+
+  const picDropdown = document.createElement("select");
+  picDropdown.setAttribute("class", "meme-dropdown");
+  for (let i = 0; i <= PICTURES.length; i++) {
+    if (i === PICTURES.length) {
+      const opt = document.createElement("option");
+      opt.setAttribute("value", "13");
+      opt.innerHTML = "Random";
+      picDropdown.appendChild(opt);
+    } else {
+      const opt = document.createElement("option");
+      opt.setAttribute("value", `${PICTURES[i].id}`);
+      opt.innerHTML = `${PICTURES[i].title}`;
+      picDropdown.appendChild(opt);
+    }
+  }
+  memeForm.appendChild(picDropdown);
+
+  memeForm.appendChild(document.createElement("br"));
+  memeForm.appendChild(document.createElement("br"));
+
+  const generateMemeButton = document.createElement("input");
+  generateMemeButton.setAttribute("type", "submit");
+  generateMemeButton.setAttribute("value", "Meme It!");
+  generateMemeButton.setAttribute("class", "btn btn-primary");
+  memeForm.appendChild(generateMemeButton);
+
+  FORM_DIV.appendChild(memeForm);
 }
 
 /*******************************************
  * Below are rough functions to test functionality
  *******************************************/
 
-function loadMeme() {
-  deleteMeme();   // clear meme if present
+function loadMeme(e) {
+  e.preventDefault();
+  deleteMeme(); // clear meme if present
 
-  let imgDiv = document.createElement("div");
+  const imgDiv = document.createElement("div");
   imgDiv.setAttribute("class", "img-div");
 
-  let meme = document.createElement("img");
+  const meme = document.createElement("img");
   meme.setAttribute("class", "img");
   imgDiv.appendChild(meme);
 
-  let randNum = Math.floor(Math.random() * PICTURES.length);
-  fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
-    .then(resp => resp.json())
-    .then(json => {
-      meme.setAttribute("src", `${json.link}`);
-    });
+  const memeNum = document.querySelector(".meme-dropdown").value;
+  if (memeNum === "13"){
+    const randNum = Math.floor(Math.random() * PICTURES.length);
+    fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
+      .then(resp => resp.json())
+      .then(json => {
+        meme.setAttribute("src", `${json.link}`);
+      });
+  } else {
+    fetch(`${PICTURES_URL}/${memeNum}`)
+      .then(resp => resp.json())
+      .then(json => {
+        meme.setAttribute("src", `${json.link}`);
+      });
+  }
 
-  let deleteButton = document.createElement("button");
+  const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "Get outta here!";
   deleteButton.setAttribute("class", "btn btn-primary");
   deleteButton.addEventListener("click", e => {
