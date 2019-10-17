@@ -35,6 +35,10 @@ header h2 {
   text-align: center;
 }
 
+form {
+  display: inline-block;
+}
+
 #form-div h2 {
   font-family: cursive;
 }
@@ -66,8 +70,4 @@ header h2 {
   text-align: center;
   margin: 5px;
   padding: 5px;
-}
-
-.text-input {
-  width: 25%;
 }

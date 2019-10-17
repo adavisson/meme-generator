@@ -50,12 +50,16 @@ function loadForm() {
   memeForm.setAttribute("method", "POST");
   memeForm.addEventListener("submit", e => loadMeme(e));
 
+  const picDiv = document.createElement("div");
+  picDiv.setAttribute("class", "form-group");
+  memeForm.appendChild(picDiv);
+
   const picLabel = document.createElement("label");     // Create label for picture dropdown
-  picLabel.innerHTML = "Pick a Pic: &nbsp";
-  memeForm.appendChild(picLabel);
+  picLabel.innerHTML = "Pick a Pic:";
+  picDiv.appendChild(picLabel);
 
   const picDropdown = document.createElement("select"); // Create picture dropdown
-  picDropdown.setAttribute("class", "meme-dropdown");
+  picDropdown.setAttribute("class", "meme-dropdown form-control");
   for (let i = 0; i <= PICTURES.length; i++) {
     if (i === PICTURES.length) {
       const opt = document.createElement("option");
@@ -69,22 +73,20 @@ function loadForm() {
       picDropdown.appendChild(opt);
     }
   }
-  memeForm.appendChild(picDropdown);
+  picDiv.appendChild(picDropdown);
 
-  memeForm.appendChild(document.createElement("br"));
-  memeForm.appendChild(document.createElement("br"));
+  const phraseDiv = document.createElement("div");
+  phraseDiv.setAttribute("class", "form-group");
+  memeForm.appendChild(phraseDiv);
 
   const phraseLabel = document.createElement("label");  // Create label for phrase input
-  phraseLabel.innerHTML = "Phill in a Phrase: &nbsp";
-  memeForm.appendChild(phraseLabel);
+  phraseLabel.innerHTML = "Phill in a Phrase:";
+  phraseDiv.appendChild(phraseLabel);
 
   const phraseInput = document.createElement("input");  // Create phrase input element
   phraseInput.setAttribute("type", "text");
-  phraseInput.setAttribute("class", "text-input");
-  memeForm.appendChild(phraseInput);
-
-  memeForm.appendChild(document.createElement("br"));
-  memeForm.appendChild(document.createElement("br"));
+  phraseInput.setAttribute("class", "form-control");
+  phraseDiv.appendChild(phraseInput);
 
   const generateMemeButton = document.createElement("input");   // Create submit button
   generateMemeButton.setAttribute("type", "submit");
