@@ -86,6 +86,7 @@ function loadForm() {
   const phraseInput = document.createElement("input");  // Create phrase input element
   phraseInput.setAttribute("type", "text");
   phraseInput.setAttribute("class", "form-control");
+  phraseInput.setAttribute("id", "phrase")
   phraseDiv.appendChild(phraseInput);
 
   const generateMemeButton = document.createElement("input");   // Create submit button
@@ -104,9 +105,9 @@ function loadMeme(e) {
   const imgDiv = document.createElement("div");   // Create img-div
   imgDiv.setAttribute("class", "img-div");
 
-  const meme = document.createElement("img");     // Create img tag 
-  meme.setAttribute("class", "img");
-  imgDiv.appendChild(meme);
+  const pic = document.createElement("img");     // Create img tag 
+  pic.setAttribute("class", "img");
+  imgDiv.appendChild(pic);
 
   const memeNum = document.querySelector(".meme-dropdown").value;   // Load selected picture with fetch call
   if (memeNum === "13"){
@@ -114,15 +115,26 @@ function loadMeme(e) {
     fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
       .then(resp => resp.json())
       .then(json => {
-        meme.setAttribute("src", `${json.link}`);
+        pic.setAttribute("src", `${json.link}`);
       });
   } else {
     fetch(`${PICTURES_URL}/${memeNum}`)
       .then(resp => resp.json())
       .then(json => {
-        meme.setAttribute("src", `${json.link}`);
+        pic.setAttribute("src", `${json.link}`);
       });
   }
+
+  /*************************************
+   * Get phrase and add it to meme
+   *************************************/
+
+  const phrase = document.getElementById("phrase").value;
+  console.log(phrase);
+  const phraseDiv = document.createElement("div");
+  phraseDiv.setAttribute("class", "top");
+  phraseDiv.innerHTML = `${phrase}`;
+  imgDiv.appendChild(phraseDiv);
 
   const deleteButton = document.createElement("button");    // Create delete button
   deleteButton.innerHTML = "Get outta here!";

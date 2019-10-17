@@ -2,10 +2,10 @@ body {
   background-color: rgb(245, 178, 151);
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 
 header {
-  /*background-color: #4caf50;*/
   background-image: url("https://cdn.dribbble.com/users/5019/screenshots/129326/shot_1299896380.jpg");
   margin: 0 auto;
   height: 50px;
@@ -48,6 +48,8 @@ form {
 }
 
 #content {
+  display: inline-block;
+  max-width: 65%;
   text-align: center;
 }
 
@@ -56,18 +58,22 @@ form {
 }
 
 .img {
-  max-width: 60%;
+  max-width: 100%;
   height: auto;
   margin: 10px;
   padding: 10px;
 }
 
 .img-div {
-  min-width: 120px;
-  max-width: 100%;
-  min-height: 120px;
-  max-height: auto;
+  position: relative;
   text-align: center;
   margin: 5px;
   padding: 5px;
+}
+
+.top {
+  position: absolute;
+  top: 35px;
+  left: 300px;
+  font-size: 500%;
 }
