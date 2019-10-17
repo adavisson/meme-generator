@@ -45,17 +45,16 @@ function loadPictures() {
 }
 
 function loadForm() {
-  const memeForm = document.createElement("form");
+  const memeForm = document.createElement("form");      // Create form element
   memeForm.setAttribute("action", `${PICTURES_URL}`);
   memeForm.setAttribute("method", "POST");
-
   memeForm.addEventListener("submit", e => loadMeme(e));
 
-  const picLabel = document.createElement("label");
+  const picLabel = document.createElement("label");     // Create label for picture dropdown
   picLabel.innerHTML = "Pick a Pic: &nbsp";
   memeForm.appendChild(picLabel);
 
-  const picDropdown = document.createElement("select");
+  const picDropdown = document.createElement("select"); // Create picture dropdown
   picDropdown.setAttribute("class", "meme-dropdown");
   for (let i = 0; i <= PICTURES.length; i++) {
     if (i === PICTURES.length) {
@@ -75,7 +74,7 @@ function loadForm() {
   memeForm.appendChild(document.createElement("br"));
   memeForm.appendChild(document.createElement("br"));
 
-  const generateMemeButton = document.createElement("input");
+  const generateMemeButton = document.createElement("input");   // Create submit button
   generateMemeButton.setAttribute("type", "submit");
   generateMemeButton.setAttribute("value", "Meme It!");
   generateMemeButton.setAttribute("class", "btn btn-primary");
@@ -84,22 +83,18 @@ function loadForm() {
   FORM_DIV.appendChild(memeForm);
 }
 
-/*******************************************
- * Below are rough functions to test functionality
- *******************************************/
-
 function loadMeme(e) {
-  e.preventDefault();
-  deleteMeme(); // clear meme if present
+  e.preventDefault();   // Prevent form from default action of submitting to /pictures
+  deleteMeme();         // Clear meme if present
 
-  const imgDiv = document.createElement("div");
+  const imgDiv = document.createElement("div");   // Create img-div
   imgDiv.setAttribute("class", "img-div");
 
-  const meme = document.createElement("img");
+  const meme = document.createElement("img");     // Create img tag 
   meme.setAttribute("class", "img");
   imgDiv.appendChild(meme);
 
-  const memeNum = document.querySelector(".meme-dropdown").value;
+  const memeNum = document.querySelector(".meme-dropdown").value;   // Load selected picture with fetch call
   if (memeNum === "13"){
     const randNum = Math.floor(Math.random() * PICTURES.length);
     fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
@@ -115,20 +110,19 @@ function loadMeme(e) {
       });
   }
 
-  const deleteButton = document.createElement("button");
+  const deleteButton = document.createElement("button");    // Create delete button
   deleteButton.innerHTML = "Get outta here!";
   deleteButton.setAttribute("class", "btn btn-primary");
   deleteButton.addEventListener("click", e => {
     deleteMeme();
   });
 
-  //CONTENT_DIV.style.textAlign = "center";
-  CONTENT_DIV.setAttribute("class", "meme-space");
+  CONTENT_DIV.setAttribute("class", "meme-space");      // Add class for gaudy border
   CONTENT_DIV.appendChild(imgDiv);
   CONTENT_DIV.appendChild(deleteButton);
 }
 
-function deleteMeme() {
+function deleteMeme() {             // Clear content area of meme
   while (CONTENT_DIV.firstChild) {
     CONTENT_DIV.removeChild(CONTENT_DIV.firstChild);
   }
