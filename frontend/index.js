@@ -1,8 +1,10 @@
 const BASE_URL = "http://localhost:3000";
 const PICTURES_URL = `${BASE_URL}/pictures`;
+const PHRASES_URL = `${BASE_URL}/phrases`;
 const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
+const PHRASES = [];
 const COLORS = {
   "Red": "FF0000",
   "Orange": "FFA500",
@@ -15,7 +17,6 @@ const COLORS = {
 
 document.addEventListener("DOMContentLoaded", function() {
   loadPictures();
-  //loadForm();
 });
 
 class Picture {
@@ -46,7 +47,7 @@ class Meme {
   }
 
   save() {
-    
+
   }
 }
 
@@ -59,6 +60,17 @@ function loadPictures() {
       }
     })
     .then(loadForm);
+}
+
+function loadPhrases() {
+  fetch(`${PHRASES_URL}`)
+    .then(resp => resp.json())
+    .then(json => {
+      for (let i = 0; i < json.length; i++) {
+        PHRASES.push(new Phrase(json[i].content));
+      }
+    })
+    .then(console.log(PHRASES));
 }
 
 function loadForm() {
