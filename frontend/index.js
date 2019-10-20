@@ -3,6 +3,15 @@ const PICTURES_URL = `${BASE_URL}/pictures`;
 const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
+const COLORS = {
+  "Red": "FF0000",
+  "Orange": "FFA500",
+  "Yellow": "FFFF00",
+  "Green": "008000",
+  "Blue": "0000FF",
+  "Purple": "800080",
+  "Black": "000000"
+}
 
 document.addEventListener("DOMContentLoaded", function() {
   loadPictures();
@@ -22,6 +31,10 @@ class Phrase {
     this.content = content;
     this.color = `#${color}`;
   }
+
+  save() {
+
+  }
 }
 
 class Meme {
@@ -30,6 +43,10 @@ class Meme {
     this.picture = picture; // picture object
     this.phrase = phrase; // phrase object
     this.phrase_position = phrase_position; // 1 = top, 2 = bottom
+  }
+
+  save() {
+    
   }
 }
 
@@ -89,6 +106,24 @@ function loadForm() {
   phraseInput.setAttribute("id", "phrase");
   phraseDiv.appendChild(phraseInput);
 
+  const phraseColorDiv = document.createElement("div");
+  phraseColorDiv.setAttribute("class", "form-group");
+  memeForm.appendChild(phraseColorDiv);
+
+  const phraseColorLabel = document.createElement("label"); // Create phrase color label
+  phraseColorLabel.innerHTML = "Choose a color:";
+  phraseColorDiv.appendChild(phraseColorLabel);
+
+  const phraseColorDropdown = document.createElement("select"); // Create dropdown for phrase color
+  phraseColorDropdown.setAttribute("class", "phrase-color-dropdown form-control");
+  for (let key in COLORS) {
+    const opt = document.createElement("option");
+    opt.setAttribute("value", `${COLORS[key]}`);
+    opt.innerHTML = `${key}`;
+    phraseColorDropdown.appendChild(opt);
+  }
+  phraseColorDiv.appendChild(phraseColorDropdown);
+
   const generateMemeButton = document.createElement("input"); // Create submit button
   generateMemeButton.setAttribute("type", "submit");
   generateMemeButton.setAttribute("value", "Meme It!");
@@ -129,11 +164,12 @@ function loadMeme(e) {
    * Get phrase and add it to meme
    *************************************/
 
-  const phrase = document.getElementById("phrase").value;
-  console.log(phrase);
+  // Create phrase object
+  const phrase = new Phrase(document.getElementById("phrase").value, document.querySelector(".phrase-color-dropdown").value);
   const phraseDiv = document.createElement("div");
   phraseDiv.setAttribute("class", "top");
-  phraseDiv.innerHTML = `${phrase}`;
+  phraseDiv.style.color = `${phrase.color}`;
+  phraseDiv.innerHTML = `${phrase.content}`;
   imgDiv.appendChild(phraseDiv);
 
   const deleteButton = document.createElement("button"); // Create delete button
