@@ -1,19 +1,20 @@
 const BASE_URL = "http://localhost:3000";
 const PICTURES_URL = `${BASE_URL}/pictures`;
 const PHRASES_URL = `${BASE_URL}/phrases`;
+const MEMES_URL = `${BASE_URL}/memes`;
 const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
 const PHRASES = [];
 const COLORS = {
-  "Red": "FF0000",
-  "Orange": "FFA500",
-  "Yellow": "FFFF00",
-  "Green": "008000",
-  "Blue": "0000FF",
-  "Purple": "800080",
-  "Black": "000000"
-}
+  Red: "FF0000",
+  Orange: "FFA500",
+  Yellow: "FFFF00",
+  Green: "008000",
+  Blue: "0000FF",
+  Purple: "800080",
+  Black: "000000"
+};
 
 document.addEventListener("DOMContentLoaded", function() {
   loadPictures();
@@ -33,21 +34,35 @@ class Phrase {
     this.color = `#${color}`;
   }
 
-  save() {
-
-  }
+  save() {}
 }
 
 class Meme {
-  constructor(title, picture, phrase, phrase_position) {
+  constructor(title, picture, phrase, phrasePosition) {
     this.title = title;
     this.picture = picture; // picture object
     this.phrase = phrase; // phrase object
-    this.phrase_position = phrase_position; // 1 = top, 2 = bottom
+    this.phrasePosition = phrasePosition; // 1 = top, 2 = bottom
   }
 
+  // Make this a prototype?
   save() {
+    let meme = {
+      title: this.title,
+      phrase_position: this.phrasePosition,
+      phrase_id: this.phrase.id,
+      picture_id: this.picture.id
+    };
 
+    let configObject = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(meme)
+    }
+
+    fetch(`${MEMES_URL}`,configObject)
   }
 }
 
@@ -127,7 +142,10 @@ function loadForm() {
   phraseColorDiv.appendChild(phraseColorLabel);
 
   const phraseColorDropdown = document.createElement("select"); // Create dropdown for phrase color
-  phraseColorDropdown.setAttribute("class", "phrase-color-dropdown form-control");
+  phraseColorDropdown.setAttribute(
+    "class",
+    "phrase-color-dropdown form-control"
+  );
   for (let key in COLORS) {
     const opt = document.createElement("option");
     opt.setAttribute("value", `${COLORS[key]}`);
@@ -177,7 +195,10 @@ function loadMeme(e) {
    *************************************/
 
   // Create phrase object
-  const phrase = new Phrase(document.getElementById("phrase").value, document.querySelector(".phrase-color-dropdown").value);
+  const phrase = new Phrase(
+    document.getElementById("phrase").value,
+    document.querySelector(".phrase-color-dropdown").value
+  );
   const phraseDiv = document.createElement("div");
   phraseDiv.setAttribute("class", "top");
   phraseDiv.style.color = `${phrase.color}`;
