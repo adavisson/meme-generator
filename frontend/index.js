@@ -317,7 +317,13 @@ function loadMeme(e) {
     document.querySelector(".phrase-color-dropdown").value
   );
   const phraseDiv = document.createElement("div");
-  phraseDiv.setAttribute("class", "bottom");
+  const phrasePosition = document.getElementsByName("textPos");
+  for (let i = 0; i < phrasePosition.length; i++){
+    if (phrasePosition[i].checked){
+      phraseDiv.setAttribute("class", `${phrasePosition[i].value}`);
+      break;
+    }
+  }
   phraseDiv.style.color = `${phrase.color}`;
   phraseDiv.innerHTML = `${phrase.content}`;
   imgDiv.appendChild(phraseDiv);
