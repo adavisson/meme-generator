@@ -241,6 +241,35 @@ function loadForm() {
   }
   phraseColorDiv.appendChild(phraseColorDropdown);
 
+  const textPositionDiv = document.createElement("div");
+  textPositionDiv.setAttribute("class", "form-group");
+  memeForm.appendChild(textPositionDiv);
+
+  const textPositionTopLabel = document.createElement("label");
+  textPositionTopLabel.setAttribute("class", "radio-inline");
+  textPositionTopLabel.innerHTML = " Top ";
+  textPositionDiv.appendChild(textPositionTopLabel);
+
+  const textPositionTop = document.createElement("input");
+  textPositionTop.setAttribute("type", "radio");
+  textPositionTop.setAttribute("name", "textPos");
+  textPositionTop.setAttribute("value", "top");
+  textPositionTop.setAttribute("id", "textPosTop");
+  textPositionTop.checked = true;
+  textPositionTopLabel.appendChild(textPositionTop);
+
+  const textPositionBottomLabel = document.createElement("label");
+  textPositionBottomLabel.setAttribute("class", "radio-inline");
+  textPositionBottomLabel.innerHTML = " Bottom ";
+  textPositionDiv.appendChild(textPositionBottomLabel);
+
+  const textPositionBottom = document.createElement("input");
+  textPositionBottom.setAttribute("type", "radio");
+  textPositionBottom.setAttribute("name", "textPos");
+  textPositionBottom.setAttribute("value", "bottom");
+  textPositionBottom.setAttribute("id", "textPosTop");
+  textPositionBottomLabel.appendChild(textPositionBottom);
+
   const generateMemeButton = document.createElement("input"); // Create submit button
   generateMemeButton.setAttribute("type", "submit");
   generateMemeButton.setAttribute("value", "Meme It!");
