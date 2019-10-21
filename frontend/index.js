@@ -288,7 +288,7 @@ function loadMeme(e) {
     document.querySelector(".phrase-color-dropdown").value
   );
   const phraseDiv = document.createElement("div");
-  phraseDiv.setAttribute("class", "top");
+  phraseDiv.setAttribute("class", "bottom");
   phraseDiv.style.color = `${phrase.color}`;
   phraseDiv.innerHTML = `${phrase.content}`;
   imgDiv.appendChild(phraseDiv);

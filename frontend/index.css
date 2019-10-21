@@ -69,11 +69,20 @@ form {
   text-align: center;
   margin: 5px;
   padding: 5px;
+  overflow: hidden;
 }
 
 .top {
   position: absolute;
+  margin: 20px;
   top: 35px;
-  left: 300px;
-  font-size: 500%;
+  /* left: 200px; */
+  font-size: 400%;
+}
+
+.bottom {
+  position: absolute;
+  margin: 20px;
+  bottom: 35px;
+  font-size: 400%;
 }
