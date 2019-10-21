@@ -43,6 +43,10 @@ class Phrase {
     this.content = content;
     this.color = `#${color}`;
   }
+
+  get id(){
+    return this._id;
+  }
 }
 
 Phrase.prototype.save = function () {
@@ -58,7 +62,12 @@ Phrase.prototype.save = function () {
     body: JSON.stringify(phrase)
   };
 
-  fetch (`${PHRASES_URL}`, configObject);
+  fetch (`${PHRASES_URL}`, configObject)
+    .then(resp => resp.json())
+    .then(json => {
+      this._id = json.id;
+      console.log(this);
+    });
 }
 
 class Meme {
@@ -230,16 +239,26 @@ function loadMeme(e) {
   phraseDiv.innerHTML = `${phrase.content}`;
   imgDiv.appendChild(phraseDiv);
 
+  const saveButton = document.createElement("button");
+  saveButton.innerHTML = "Save the Meme!";
+  saveButton.setAttribute("class", "btn btn-primary");
+  saveButton.addEventListener("click", e => {
+    phrase.save();
+    console.log(`${phrase.id}`)
+    //meme.save
+  });
+  CONTENT_DIV.appendChild(saveButton);
+
   const deleteButton = document.createElement("button"); // Create delete button
   deleteButton.innerHTML = "Get outta here!";
   deleteButton.setAttribute("class", "btn btn-primary");
   deleteButton.addEventListener("click", e => {
     deleteMeme();
   });
+  CONTENT_DIV.appendChild(deleteButton);
 
   CONTENT_DIV.setAttribute("class", "meme-space"); // Add class for gaudy border
   CONTENT_DIV.appendChild(imgDiv);
-  CONTENT_DIV.appendChild(deleteButton);
 }
 
 function deleteMeme() {
