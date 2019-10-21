@@ -21,13 +21,15 @@ const COLORS = {
  *  loadPictures
  *  loadPhrases 
  *  loadForm
+ *    newPhrase
+ *    existingPhrase
  *  loadMeme
  *  deleteMeme
  *  deleteFormDivContents
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", function() {
-  //loadPictures();
+  loadPhrases();  // Need to find a way to move this out of here
 });
 
 class Picture {
@@ -116,12 +118,51 @@ function loadPhrases() {
       for (let i = 0; i < json.length; i++) {
         PHRASES.push(new Phrase(json[i].content));
       }
-    })
-    .then(console.log(PHRASES));
+    });
 }
 
 function loadForm() {
   deleteFormDivContents(); //Clear form area
+
+  function newPhrase() {
+    const phraseLabel = document.createElement("label"); // Create label for phrase input
+    phraseLabel.innerHTML = "Phill in a Phrase:";
+    phraseDiv.appendChild(phraseLabel);
+
+    const phraseInput = document.createElement("input"); // Create phrase input element
+    phraseInput.setAttribute("type", "text");
+    phraseInput.setAttribute("class", "form-control");
+    phraseInput.setAttribute("id", "phrase");
+    phraseDiv.appendChild(phraseInput);
+
+    const phraseSaveButton = document.createElement("button");
+    phraseSaveButton.innerHTML = "Save the Phrase";
+    phraseSaveButton.setAttribute("class", "btn btn-primary");
+    phraseSaveButton.addEventListener("click", e => {
+      e.preventDefault();
+      new Phrase(document.getElementById("phrase").value).save();
+      alert("Saved the phrase");
+    });
+    phraseDiv.appendChild(phraseSaveButton);
+  }
+
+  function existingPhrase() {
+    const phraseLabel = document.createElement("label");  // Create phrase label
+    phraseLabel.innerHTML = "Choose an existing phrase";
+    phraseDiv.appendChild(phraseLabel);
+
+    const phraseDropDown = document.createElement("select");
+    phraseDropDown.setAttribute("class", "form-control");
+    phraseDropDown.setAttribute("id", "phrase");
+    console.log(PHRASES.length);
+    for (let i = 0; i < PHRASES.length; i++) {
+      const opt = document.createElement("option");
+      opt.setAttribute("value", `${PHRASES[i].content}`);
+      opt.innerHTML = `${PHRASES[i].content}`;
+      phraseDropDown.appendChild(opt);
+    }
+    phraseDiv.appendChild(phraseDropDown);
+  }
 
   const memeForm = document.createElement("form"); // Create form element
   memeForm.setAttribute("action", `${PICTURES_URL}`);
@@ -157,15 +198,27 @@ function loadForm() {
   phraseDiv.setAttribute("class", "form-group");
   memeForm.appendChild(phraseDiv);
 
-  const phraseLabel = document.createElement("label"); // Create label for phrase input
-  phraseLabel.innerHTML = "Phill in a Phrase:";
-  phraseDiv.appendChild(phraseLabel);
+  const newPhraseButton = document.createElement("button");
+  newPhraseButton.innerHTML = "Create a Phrase";
+  newPhraseButton.setAttribute("class", "btn btn-primary");
+  newPhraseButton.addEventListener("click", e => {
+    while(phraseDiv.firstChild){
+      phraseDiv.removeChild(phraseDiv.firstChild);
+    }
+    newPhrase();
+  });
+  phraseDiv.appendChild(newPhraseButton);
 
-  const phraseInput = document.createElement("input"); // Create phrase input element
-  phraseInput.setAttribute("type", "text");
-  phraseInput.setAttribute("class", "form-control");
-  phraseInput.setAttribute("id", "phrase");
-  phraseDiv.appendChild(phraseInput);
+  const existingPhraseButton = document.createElement("button");
+  existingPhraseButton.innerHTML = "Choose Existing Phrase";
+  existingPhraseButton.setAttribute("class", "btn btn-primary");
+  existingPhraseButton.addEventListener("click", e => {
+    while(phraseDiv.firstChild){
+      phraseDiv.removeChild(phraseDiv.firstChild);
+    }
+    existingPhrase();
+  });
+  phraseDiv.appendChild(existingPhraseButton);
 
   const phraseColorDiv = document.createElement("div");
   phraseColorDiv.setAttribute("class", "form-group");
@@ -229,6 +282,7 @@ function loadMeme(e) {
    *************************************/
 
   // Create phrase object
+
   const phrase = new Phrase(
     document.getElementById("phrase").value,
     document.querySelector(".phrase-color-dropdown").value
