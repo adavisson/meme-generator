@@ -16,8 +16,18 @@ const COLORS = {
   Black: "000000"
 };
 
+/*********************************************
+ * Function List:
+ *  loadPictures
+ *  loadPhrases 
+ *  loadForm
+ *  loadMeme
+ *  deleteMeme
+ *  deleteFormDivContents
+ *********************************************/
+
 document.addEventListener("DOMContentLoaded", function() {
-  loadPictures();
+  //loadPictures();
 });
 
 class Picture {
@@ -33,8 +43,22 @@ class Phrase {
     this.content = content;
     this.color = `#${color}`;
   }
+}
 
-  save() {}
+Phrase.prototype.save = function () {
+  let phrase = {
+    content: this.content
+  };
+
+  let configObject = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(phrase)
+  };
+
+  fetch (`${PHRASES_URL}`, configObject);
 }
 
 class Meme {
@@ -44,26 +68,25 @@ class Meme {
     this.phrase = phrase; // phrase object
     this.phrasePosition = phrasePosition; // 1 = top, 2 = bottom
   }
+}
 
-  // Make this a prototype?
-  save() {
-    let meme = {
-      title: this.title,
-      phrase_position: this.phrasePosition,
-      phrase_id: this.phrase.id,
-      picture_id: this.picture.id
-    };
+Meme.prototype.save = function() {
+  let meme = {
+    title: this.title,
+    phrase_position: this.phrasePosition,
+    phrase_id: this.phrase.id,
+    picture_id: this.picture.id
+  };
 
-    let configObject = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(meme)
-    }
-
-    fetch(`${MEMES_URL}`,configObject)
+  let configObject = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(meme)
   }
+
+  fetch(`${MEMES_URL}`,configObject)
 }
 
 function loadPictures() {
@@ -89,6 +112,8 @@ function loadPhrases() {
 }
 
 function loadForm() {
+  deleteFormDivContents(); //Clear form area
+
   const memeForm = document.createElement("form"); // Create form element
   memeForm.setAttribute("action", `${PICTURES_URL}`);
   memeForm.setAttribute("method", "POST");
@@ -223,4 +248,11 @@ function deleteMeme() {
     CONTENT_DIV.removeChild(CONTENT_DIV.firstChild);
   }
   CONTENT_DIV.removeAttribute("class");
+}
+
+function deleteFormDivContents() {
+  // Clear form area
+  while (FORM_DIV.firstChild){
+    FORM_DIV.removeChild(FORM_DIV.firstChild);
+  }
 }
