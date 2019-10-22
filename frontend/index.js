@@ -6,6 +6,7 @@ const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
 const PHRASES = [];
+//const MEMES = [];
 const COLORS = {
   Red: "FF0000",
   Orange: "FFA500",
@@ -34,9 +35,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 class Picture {
   constructor(id, title, link) {
-    this.id = id;
+    this._id = id;
     this.title = title;
     this.link = link;
+  }
+
+  set id(id) {
+    this._id = id;
+  }
+
+  get id(){
+    return this._id;
   }
 }
 
@@ -68,12 +77,13 @@ Phrase.prototype.save = function () {
     body: JSON.stringify(phrase)
   };
 
-  fetch (`${PHRASES_URL}`, configObject)
+  return fetch (`${PHRASES_URL}`, configObject)
     .then(resp => resp.json())
     .then(json => {
       this._id = json.id;
       console.log(this);
-    });
+    })
+    .then();
 }
 
 class Meme {
@@ -101,7 +111,9 @@ Meme.prototype.save = function() {
     body: JSON.stringify(meme)
   }
 
-  fetch(`${MEMES_URL}`,configObject)
+  return fetch(`${MEMES_URL}`,configObject)
+    .then(resp => resp.json())
+    .then(json => console.log(json));
 }
 
 function loadPictures() {
@@ -126,6 +138,12 @@ function loadPhrases(func) {
       }
     })
     .then(func);
+}
+
+function loadMemes() {
+  fetch(`${MEMES_URL}`)
+    .then(resp => resp.json())
+    .then(json => console.log(json));
 }
 
 function loadForm() {
@@ -305,7 +323,7 @@ function loadForm() {
 
 function loadMeme(e) {
   e.preventDefault(); // Prevent form from default action of submitting to /pictures
-  let title, picture, phrase;
+  let title, picture, phrase, phrasePosition;
 
   title = document.getElementById("title").value;
 
@@ -320,7 +338,7 @@ function loadMeme(e) {
   for (let i = 0; i < PHRASES.length; i++){
     if (PHRASES[i].content === document.getElementById("phrase").value){
       phrase = PHRASES[i];
-      phrase.color = document.querySelector(".phrase-color-dropdown").value
+      phrase.color = `#${document.querySelector(".phrase-color-dropdown").value}`
       break;
     }
   }
@@ -330,7 +348,13 @@ function loadMeme(e) {
       document.querySelector(".phrase-color-dropdown").value
     );
   }
-  const phrasePosition = document.getElementsByName("textPos");
+  const phrasePositionElement = document.getElementsByName("textPos");
+  for (let i = 0; i < phrasePositionElement.length; i++){
+    if (phrasePositionElement[i].checked){
+      phrasePosition = phrasePositionElement[i].value;
+      break;
+    }
+  }
 
   const meme = new Meme(title, picture, phrase, phrasePosition);
   displayMeme(meme);
@@ -354,23 +378,19 @@ function displayMeme(meme){
       });
 
   const phraseDiv = document.createElement("div");
-  for (let i = 0; i < meme.phrasePosition.length; i++){
-    if (meme.phrasePosition[i].checked){
-      phraseDiv.setAttribute("class", `${meme.phrasePosition[i].value}`);
-      break;
-    }
-  }
+  console.log(meme.phrase.color);
   phraseDiv.style.color = `${meme.phrase.color}`;
   phraseDiv.innerHTML = `${meme.phrase.content}`;
+  phraseDiv.setAttribute("class", `${meme.phrasePosition}`);
   imgDiv.appendChild(phraseDiv);
 
   const saveButton = document.createElement("button");
   saveButton.innerHTML = "Save the Meme!";
   saveButton.setAttribute("class", "btn btn-primary");
   saveButton.addEventListener("click", e => {
-    phrase.save();
-    console.log(`${meme.phrase.id}`)
-    //meme.save
+    meme.phrase.save()
+      .then(() => meme.save())
+      .then(() => alert("Meme Saved"));
   });
   CONTENT_DIV.appendChild(saveButton);
 
