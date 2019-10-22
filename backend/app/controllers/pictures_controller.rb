@@ -8,7 +8,7 @@ class PicturesController < ApplicationController
   def show
     picture = Picture.find_by(id: params[:id])
     if picture
-      render json: picture, only: [:id, :title, :link]
+      render json: picture, only: [:id, :title, :link], include: [:phrases]
     else
       render json: {error: "No picture found with matching id."}
     end
