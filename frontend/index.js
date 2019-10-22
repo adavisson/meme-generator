@@ -6,6 +6,7 @@ const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
 const PHRASES = [];
+const COMMON_PHRASES = [];
 const MEMES = [];
 const COLORS = {
   Red: "FF0000",
@@ -28,6 +29,7 @@ const COLORS = {
  *  loadForm
  *    newPhrase
  *    existingPhrase
+ *    usedPhrases
  *  loadMeme
  *  displayMeme
  *  deleteChildElements
@@ -126,8 +128,18 @@ Meme.prototype.save = function() {
 
   return fetch(`${MEMES_URL}`, configObject)
     .then(resp => resp.json())
-    .then(json => console.log(json));
-};
+    .then(json => {
+      const phrase = getPhrase(json.phrase_id);
+      const pic = getPic(json.picture_id);
+      const meme = new Meme(
+        json.title,
+        pic,
+        phrase,
+        json.phrase_position
+      );
+      MEMES.push(meme);
+    });
+}
 
 function loadPictures() {
   // Clear PICTURES Array
@@ -156,6 +168,19 @@ function loadPhrases(func) {
       }
     })
     .then(func);
+}
+
+function loadCommonPhrases(id){
+  // Clear common phrases array
+  COMMON_PHRASES.length = 0;
+
+  return fetch(`${PICTURES_URL}/${id}`)
+    .then(resp => resp.json())
+    .then(json => {
+      for (let i = 0; i < json.phrases.length; i++){
+        COMMON_PHRASES.push(json.phrases[i]);
+      }
+    });
 }
 
 function loadMemes() {
@@ -211,6 +236,15 @@ function loadForm() {
     });
     phraseDiv.appendChild(existingPhraseButton);
 
+    const popularPhraseButton = document.createElement("button");
+    popularPhraseButton.innerHTML = "Phrases popular w/ Pic";
+    popularPhraseButton.setAttribute("class", "btn btn-primary");
+    popularPhraseButton.addEventListener("click", e => {
+      deleteChildElements(phraseDiv);
+      usedPhrases();
+    });
+    phraseDiv.appendChild(popularPhraseButton);
+
     phraseDiv.appendChild(document.createElement("br"));
 
     const phraseLabel = document.createElement("label"); // Create label for phrase input
@@ -247,6 +281,15 @@ function loadForm() {
     });
     phraseDiv.appendChild(newPhraseButton);
 
+    const popularPhraseButton = document.createElement("button");
+    popularPhraseButton.innerHTML = "Phrases popular w/ Pic";
+    popularPhraseButton.setAttribute("class", "btn btn-primary");
+    popularPhraseButton.addEventListener("click", e => {
+      deleteChildElements(phraseDiv);
+      usedPhrases();
+    });
+    phraseDiv.appendChild(popularPhraseButton);
+
     phraseDiv.appendChild(document.createElement("br"));
 
     const phraseLabel = document.createElement("label"); // Create phrase label
@@ -265,6 +308,64 @@ function loadForm() {
     phraseDiv.appendChild(phraseDropDown);
   }
 
+  function usedPhrases() {
+    const newPhraseButton = document.createElement("button");
+    newPhraseButton.innerHTML = "Create a Phrase";
+    newPhraseButton.setAttribute("class", "btn btn-primary");
+    newPhraseButton.addEventListener("click", e => {
+      while (phraseDiv.firstChild) {
+        phraseDiv.removeChild(phraseDiv.firstChild);
+      }
+      newPhrase();
+    });
+    phraseDiv.appendChild(newPhraseButton);
+
+    const existingPhraseButton = document.createElement("button");
+    existingPhraseButton.innerHTML = "Choose Existing Phrase";
+    existingPhraseButton.setAttribute("class", "btn btn-primary");
+    existingPhraseButton.addEventListener("click", e => {
+      while (phraseDiv.firstChild) {
+        phraseDiv.removeChild(phraseDiv.firstChild);
+      }
+      loadPhrases(existingPhrase);
+    });
+    phraseDiv.appendChild(existingPhraseButton);
+
+    const popularPhraseButton = document.createElement("button");
+    popularPhraseButton.innerHTML = "Update Phrases";
+    popularPhraseButton.setAttribute("class", "btn btn-primary");
+    popularPhraseButton.addEventListener("click", e => {
+      deleteChildElements(phraseDiv);
+      usedPhrases();
+    });
+    phraseDiv.appendChild(popularPhraseButton);
+
+    phraseDiv.appendChild(document.createElement("br"));
+
+    let picNum = document.querySelector(".meme-dropdown").value;
+    if (picNum >= PICTURES.length){
+      alert("Choose a picture other than random.");
+    } else {
+      loadCommonPhrases(picNum)
+        .then(() => {
+          const phraseLabel = document.createElement("label"); // Create phrase label
+          phraseLabel.innerHTML = "Choose a common phrase:";
+          phraseDiv.appendChild(phraseLabel);
+
+          const phraseDropDown = document.createElement("select");
+          phraseDropDown.setAttribute("class", "form-control");
+          phraseDropDown.setAttribute("id", "phrase");
+          for (let i = 0; i < COMMON_PHRASES.length; i++){
+            const opt = document.createElement("option");
+            opt.setAttribute("value", `${COMMON_PHRASES[i].content}`);
+            opt.innerHTML = `${COMMON_PHRASES[i].content}`;
+            phraseDropDown.appendChild(opt);
+          }
+          phraseDiv.appendChild(phraseDropDown);
+        });
+    }
+  }
+
   const memeForm = document.createElement("form"); // Create form element
   memeForm.setAttribute("action", `${MEMES_URL}`);
   memeForm.setAttribute("method", "POST");
@@ -272,7 +373,7 @@ function loadForm() {
 
   const existingMemeButton = document.createElement("button");
   existingMemeButton.setAttribute("class", "btn btn-primary");
-  existingMemeButton.innerHTML = "Pick an exitsting meme!";
+  existingMemeButton.innerHTML = "Pick an existing meme!";
   existingMemeButton.addEventListener("click", e => {
     e.preventDefault;
     pickMemes();
@@ -330,9 +431,7 @@ function loadForm() {
   newPhraseButton.innerHTML = "Create a Phrase";
   newPhraseButton.setAttribute("class", "btn btn-primary");
   newPhraseButton.addEventListener("click", e => {
-    while (phraseDiv.firstChild) {
-      phraseDiv.removeChild(phraseDiv.firstChild);
-    }
+    deleteChildElements(phraseDiv);
     newPhrase();
   });
   phraseDiv.appendChild(newPhraseButton);
@@ -341,12 +440,19 @@ function loadForm() {
   existingPhraseButton.innerHTML = "Choose Existing Phrase";
   existingPhraseButton.setAttribute("class", "btn btn-primary");
   existingPhraseButton.addEventListener("click", e => {
-    while (phraseDiv.firstChild) {
-      phraseDiv.removeChild(phraseDiv.firstChild);
-    }
+    deleteChildElements(phraseDiv);
     loadPhrases(existingPhrase);
   });
   phraseDiv.appendChild(existingPhraseButton);
+
+  const popularPhraseButton = document.createElement("button");
+  popularPhraseButton.innerHTML = "Phrases popular w/ Pic";
+  popularPhraseButton.setAttribute("class", "btn btn-primary");
+  popularPhraseButton.addEventListener("click", e => {
+    deleteChildElements(phraseDiv);
+    usedPhrases();
+  });
+  phraseDiv.appendChild(popularPhraseButton);
 
   const phraseColorDiv = document.createElement("div");
   phraseColorDiv.setAttribute("class", "form-group");
@@ -486,7 +592,7 @@ function loadMeme(e) {
   title = document.getElementById("title").value;
 
   const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
-  if (picNum === "13") {
+  if (picNum === PICTURES.length) {
     const randNum = Math.floor(Math.random() * PICTURES.length);
     picture = PICTURES[randNum];
   } else {
