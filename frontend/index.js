@@ -31,6 +31,7 @@ const COLORS = {
 
 document.addEventListener("DOMContentLoaded", function() {
   //loadPhrases();  // Need to find a way to move this out of here
+  loadPictures();
 });
 
 class Picture {
@@ -125,17 +126,23 @@ Meme.prototype.save = function() {
 };
 
 function loadPictures() {
+  // Clear PICTURES Array
+  PICTURES.length = 0;
+
+  for (let i = 0; i < PICTURES.length; )
   fetch(`${PICTURES_URL}`)
     .then(resp => resp.json())
     .then(json => {
       for (let i = 0; i < json.length; i++) {
         PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
       }
-    })
-    .then(loadForm);
+    });
 }
 
 function loadPhrases(func) {
+  // Clear PHRASES Array
+  PHRASES.length = 0;
+
   fetch(`${PHRASES_URL}`)
     .then(resp => resp.json())
     .then(json => {
@@ -149,6 +156,9 @@ function loadPhrases(func) {
 }
 
 function loadMemes() {
+  // Clear MEMES Array
+  MEMES.length = 0;
+
   fetch(`${MEMES_URL}`)
     .then(resp => resp.json())
     .then(json => {
