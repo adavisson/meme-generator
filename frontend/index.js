@@ -200,6 +200,19 @@ function loadForm() {
   deleteChildElements(FORM_DIV);
 
   function newPhrase() {
+    const existingPhraseButton = document.createElement("button");
+    existingPhraseButton.innerHTML = "Choose Existing Phrase";
+    existingPhraseButton.setAttribute("class", "btn btn-primary");
+    existingPhraseButton.addEventListener("click", e => {
+      while (phraseDiv.firstChild) {
+        phraseDiv.removeChild(phraseDiv.firstChild);
+      }
+      loadPhrases(existingPhrase);
+    });
+    phraseDiv.appendChild(existingPhraseButton);
+
+    phraseDiv.appendChild(document.createElement("br"));
+
     const phraseLabel = document.createElement("label"); // Create label for phrase input
     phraseLabel.innerHTML = "Fill in a Phrase:";
     phraseDiv.appendChild(phraseLabel);
@@ -223,6 +236,19 @@ function loadForm() {
   }
 
   function existingPhrase() {
+    const newPhraseButton = document.createElement("button");
+    newPhraseButton.innerHTML = "Create a Phrase";
+    newPhraseButton.setAttribute("class", "btn btn-primary");
+    newPhraseButton.addEventListener("click", e => {
+      while (phraseDiv.firstChild) {
+        phraseDiv.removeChild(phraseDiv.firstChild);
+      }
+      newPhrase();
+    });
+    phraseDiv.appendChild(newPhraseButton);
+
+    phraseDiv.appendChild(document.createElement("br"));
+
     const phraseLabel = document.createElement("label"); // Create phrase label
     phraseLabel.innerHTML = "Choose an existing phrase";
     phraseDiv.appendChild(phraseLabel);
@@ -230,7 +256,6 @@ function loadForm() {
     const phraseDropDown = document.createElement("select");
     phraseDropDown.setAttribute("class", "form-control");
     phraseDropDown.setAttribute("id", "phrase");
-    console.log(PHRASES.length);
     for (let i = 0; i < PHRASES.length; i++) {
       const opt = document.createElement("option");
       opt.setAttribute("value", `${PHRASES[i].content}`);
@@ -244,6 +269,18 @@ function loadForm() {
   memeForm.setAttribute("action", `${MEMES_URL}`);
   memeForm.setAttribute("method", "POST");
   memeForm.addEventListener("submit", e => loadMeme(e));
+
+  const existingMemeButton = document.createElement("button");
+  existingMemeButton.setAttribute("class", "btn btn-primary");
+  existingMemeButton.innerHTML = "Pick an exitsting meme!";
+  existingMemeButton.addEventListener("click", e => {
+    e.preventDefault;
+    pickMemes();
+  });
+  memeForm.appendChild(existingMemeButton);
+
+  memeForm.appendChild(document.createElement("br"));
+  memeForm.appendChild(document.createElement("br"));
 
   const titleDiv = document.createElement("div");
   titleDiv.setAttribute("class", "form-group");
@@ -377,6 +414,19 @@ function pickMemes(){
 
 function loadExistingMemeForm() {
   deleteChildElements(FORM_DIV);
+
+  //<button class="btn btn-primary" onclick="loadForm()">Create a Meme!</button>
+  const createMemeButton = document.createElement("button");
+  createMemeButton.setAttribute("class", "btn btn-primary");
+  createMemeButton.innerHTML = "Create a New Meme!";
+  createMemeButton.addEventListener("click", e => {
+    e.preventDefault();
+    loadForm();
+  });
+  FORM_DIV.appendChild(createMemeButton);
+
+  FORM_DIV.appendChild(document.createElement("br"));
+  FORM_DIV.appendChild(document.createElement("br"));
 
   const selectMemeDiv = document.createElement("div");
   selectMemeDiv.setAttribute("class", "form-group")
