@@ -305,65 +305,53 @@ function loadForm() {
 
 function loadMeme(e) {
   e.preventDefault(); // Prevent form from default action of submitting to /pictures
-  deleteChildElements(CONTENT_DIV)
-  CONTENT_DIV.removeAttribute("class");
-
-  /***************************
-   * 1. Get Title, Pic, and Phrase
-   * 2. Build a new Meme object
-   * 3. Add save functionality
-   ***************************/
-
   let title, picture, phrase;
 
   title = document.getElementById("title").value;
-  
+
+  const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
+  if (picNum === "13") {
+    const randNum = Math.floor(Math.random() * PICTURES.length);
+    picture = PICTURES[randNum];
+  } else {
+    picture = PICTURES[picNum - 1]
+  }
+
+  phrase = new Phrase(
+    document.getElementById("phrase").value,
+    document.querySelector(".phrase-color-dropdown").value
+  );
+  const phrasePosition = document.getElementsByName("textPos");
+
+  const meme = new Meme(title, picture, phrase, phrasePosition);
+  displayMeme(meme);
+}
+
+function displayMeme(meme){
+  deleteChildElements(CONTENT_DIV)
+  CONTENT_DIV.removeAttribute("class");
+
   const imgDiv = document.createElement("div"); // Create img-div
   imgDiv.setAttribute("class", "img-div");
 
   const pic = document.createElement("img"); // Create img tag
   pic.setAttribute("class", "img");
   imgDiv.appendChild(pic);
-
-  const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
-  if (picNum === "13") {
-    const randNum = Math.floor(Math.random() * PICTURES.length);
-    picture = PICTURES[randNum];
-    fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
+  fetch(`${PICTURES_URL}/${meme.picture.id}`)
       .then(resp => resp.json())
       .then(json => {
         pic.setAttribute("src", `${json.link}`);
       });
-  } else {
-    picture = PICTURES[picNum]
-    fetch(`${PICTURES_URL}/${picNum}`)
-      .then(resp => resp.json())
-      .then(json => {
-        pic.setAttribute("src", `${json.link}`);
-      });
-  }
-  console.log(picture);
 
-  /*************************************
-   * Get phrase and add it to meme
-   *************************************/
-
-  // Create phrase object
-
-  phrase = new Phrase(
-    document.getElementById("phrase").value,
-    document.querySelector(".phrase-color-dropdown").value
-  );
   const phraseDiv = document.createElement("div");
-  const phrasePosition = document.getElementsByName("textPos");
-  for (let i = 0; i < phrasePosition.length; i++){
-    if (phrasePosition[i].checked){
-      phraseDiv.setAttribute("class", `${phrasePosition[i].value}`);
+  for (let i = 0; i < meme.phrasePosition.length; i++){
+    if (meme.phrasePosition[i].checked){
+      phraseDiv.setAttribute("class", `${meme.phrasePosition[i].value}`);
       break;
     }
   }
-  phraseDiv.style.color = `${phrase.color}`;
-  phraseDiv.innerHTML = `${phrase.content}`;
+  phraseDiv.style.color = `${meme.phrase.color}`;
+  phraseDiv.innerHTML = `${meme.phrase.content}`;
   imgDiv.appendChild(phraseDiv);
 
   const saveButton = document.createElement("button");
@@ -371,7 +359,7 @@ function loadMeme(e) {
   saveButton.setAttribute("class", "btn btn-primary");
   saveButton.addEventListener("click", e => {
     phrase.save();
-    console.log(`${phrase.id}`)
+    console.log(`${meme.phrase.id}`)
     //meme.save
   });
   CONTENT_DIV.appendChild(saveButton);
