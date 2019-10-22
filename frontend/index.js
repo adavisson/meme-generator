@@ -25,8 +25,7 @@ const COLORS = {
  *    newPhrase
  *    existingPhrase
  *  loadMeme
- *  deleteMeme
- *  deleteFormDivContents
+ *  deleteChildElements
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -45,6 +44,10 @@ class Phrase {
   constructor(content, color = "000000") {
     this.content = content;
     this.color = `#${color}`;
+  }
+
+  set id(id){
+    this._id = id;
   }
 
   get id(){
@@ -117,14 +120,17 @@ function loadPhrases(func) {
     .then(resp => resp.json())
     .then(json => {
       for (let i = 0; i < json.length; i++) {
-        PHRASES.push(new Phrase(json[i].content));
+        const phrase = new Phrase(json[i].content);
+        phrase.id = json[i].id
+        PHRASES.push(phrase);
       }
     })
     .then(func);
 }
 
 function loadForm() {
-  deleteFormDivContents(); //Clear form area
+  //deleteFormDivContents(); //Clear form area
+  deleteChildElements(FORM_DIV);
 
   function newPhrase() {
     const phraseLabel = document.createElement("label"); // Create label for phrase input
@@ -283,7 +289,8 @@ function loadForm() {
 
 function loadMeme(e) {
   e.preventDefault(); // Prevent form from default action of submitting to /pictures
-  deleteMeme(); // Clear meme if present
+  deleteChildElements(CONTENT_DIV)
+  CONTENT_DIV.removeAttribute("class");
 
   const imgDiv = document.createElement("div"); // Create img-div
   imgDiv.setAttribute("class", "img-div");
@@ -344,7 +351,8 @@ function loadMeme(e) {
   deleteButton.innerHTML = "Get outta here!";
   deleteButton.setAttribute("class", "btn btn-primary");
   deleteButton.addEventListener("click", e => {
-    deleteMeme();
+    deleteChildElements(CONTENT_DIV);
+    CONTENT_DIV.removeAttribute("class");
   });
   CONTENT_DIV.appendChild(deleteButton);
 
@@ -352,17 +360,8 @@ function loadMeme(e) {
   CONTENT_DIV.appendChild(imgDiv);
 }
 
-function deleteMeme() {
-  // Clear content area of meme
-  while (CONTENT_DIV.firstChild) {
-    CONTENT_DIV.removeChild(CONTENT_DIV.firstChild);
-  }
-  CONTENT_DIV.removeAttribute("class");
-}
-
-function deleteFormDivContents() {
-  // Clear form area
-  while (FORM_DIV.firstChild){
-    FORM_DIV.removeChild(FORM_DIV.firstChild);
+function deleteChildElements(el){
+  while (el.firstChild){
+    el.removeChild(el.firstChild);
   }
 }
