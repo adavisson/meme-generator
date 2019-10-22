@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191015192233) do
+ActiveRecord::Schema.define(version: 20191022173443) do
 
   create_table "memes", force: :cascade do |t|
     t.string   "title"
-    t.integer  "phrase_position"
+    t.string   "phrase_position"
     t.integer  "phrase_id"
     t.integer  "picture_id"
     t.datetime "created_at",      null: false

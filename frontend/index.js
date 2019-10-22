@@ -22,15 +22,19 @@ const COLORS = {
  * Function List:
  *  loadPictures
  *  loadPhrases
+ *  loadMemes
+ *  getPhrase
+ *  getPic
  *  loadForm
  *    newPhrase
  *    existingPhrase
  *  loadMeme
+ *  displayMeme
  *  deleteChildElements
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", function() {
-  //loadPhrases();  // Need to find a way to move this out of here
+  loadPhrases();  
   loadPictures();
 });
 
@@ -129,7 +133,6 @@ function loadPictures() {
   // Clear PICTURES Array
   PICTURES.length = 0;
 
-  for (let i = 0; i < PICTURES.length; )
   fetch(`${PICTURES_URL}`)
     .then(resp => resp.json())
     .then(json => {
@@ -159,7 +162,7 @@ function loadMemes() {
   // Clear MEMES Array
   MEMES.length = 0;
 
-  fetch(`${MEMES_URL}`)
+  return fetch(`${MEMES_URL}`)
     .then(resp => resp.json())
     .then(json => {
       for (let i = 0; i < json.length; i++) {
@@ -238,7 +241,7 @@ function loadForm() {
   }
 
   const memeForm = document.createElement("form"); // Create form element
-  memeForm.setAttribute("action", `${PICTURES_URL}`);
+  memeForm.setAttribute("action", `${MEMES_URL}`);
   memeForm.setAttribute("method", "POST");
   memeForm.addEventListener("submit", e => loadMeme(e));
 
@@ -367,6 +370,65 @@ function loadForm() {
   FORM_DIV.appendChild(memeForm);
 }
 
+function pickMemes(){
+  loadMemes()
+    .then(loadExistingMemeForm);
+}
+
+function loadExistingMemeForm() {
+  deleteChildElements(FORM_DIV);
+
+  const selectMemeDiv = document.createElement("div");
+  selectMemeDiv.setAttribute("class", "form-group")
+  FORM_DIV.appendChild(selectMemeDiv);
+
+  const selectMemeLabel = document.createElement("label");
+  selectMemeLabel.innerHTML = "Select a Meme";
+  selectMemeDiv.appendChild(selectMemeLabel);
+
+  const selectMemeDropDown = document.createElement("select");
+  selectMemeDropDown.setAttribute("class", "meme-dropdown form-control");
+  for (let i = 0; i < MEMES.length; i++){
+    const opt = document.createElement("option");
+    opt.setAttribute("value", i);
+    opt.innerHTML = `${MEMES[i].title}`;
+    selectMemeDropDown.appendChild(opt);
+  }
+  selectMemeDiv.appendChild(selectMemeDropDown);
+
+  const phraseColorDiv = document.createElement("div");
+  phraseColorDiv.setAttribute("class", "form-group");
+  FORM_DIV.appendChild(phraseColorDiv);
+
+  const phraseColorLabel = document.createElement("label"); // Create phrase color label
+  phraseColorLabel.innerHTML = "Choose a color:";
+  phraseColorDiv.appendChild(phraseColorLabel);
+
+  const phraseColorDropdown = document.createElement("select"); // Create dropdown for phrase color
+  phraseColorDropdown.setAttribute(
+    "class",
+    "phrase-color-dropdown form-control"
+  );
+  for (let key in COLORS) {
+    const opt = document.createElement("option");
+    opt.setAttribute("value", `${COLORS[key]}`);
+    opt.innerHTML = `${key}`;
+    phraseColorDropdown.appendChild(opt);
+  }
+  phraseColorDiv.appendChild(phraseColorDropdown);
+
+  const selectButton = document.createElement("button");
+  selectButton.setAttribute("class", "btn btn-primary");
+  selectButton.innerHTML = "Select Meme";
+  selectButton.addEventListener("click", e => {
+    const meme = MEMES[document.querySelector(".meme-dropdown").value];
+    meme.phrase.color = `#${document.querySelector(".phrase-color-dropdown").value}`;
+    console.log(meme)
+    displayMeme(meme);
+  });
+  FORM_DIV.appendChild(selectButton);
+}
+
 function loadMeme(e) {
   e.preventDefault(); // Prevent form from default action of submitting to /pictures
   let title, picture, phrase, phrasePosition;
@@ -409,7 +471,6 @@ function loadMeme(e) {
 }
 
 function displayMeme(meme) {
-  console.log(meme);
   deleteChildElements(CONTENT_DIV);
   CONTENT_DIV.removeAttribute("class");
 
@@ -426,7 +487,6 @@ function displayMeme(meme) {
     });
 
   const phraseDiv = document.createElement("div");
-  console.log(meme.phrase.color);
   phraseDiv.style.color = `${meme.phrase.color}`;
   phraseDiv.innerHTML = `${meme.phrase.content}`;
   phraseDiv.setAttribute("class", `${meme.phrasePosition}`);
