@@ -88,7 +88,7 @@ Phrase.prototype.save = function() {
     .then(resp => resp.json())
     .then(json => {
       this._id = json.id;
-      console.log(this);
+      PHRASES.push(this);
     })
     .then();
 };
@@ -131,13 +131,13 @@ Meme.prototype.save = function() {
     .then(json => {
       const phrase = getPhrase(json.phrase_id);
       const pic = getPic(json.picture_id);
-      const meme = new Meme(
-        json.title,
-        pic,
-        phrase,
-        json.phrase_position
-      );
-      MEMES.push(meme);
+      // const meme = new Meme(
+      //   json.title,
+      //   pic,
+      //   phrase,
+      //   json.phrase_position
+      // );
+      MEMES.push(this);
     });
 }
 
@@ -579,7 +579,6 @@ function loadExistingMemeForm() {
   selectButton.addEventListener("click", e => {
     const meme = MEMES[document.querySelector(".meme-dropdown").value];
     meme.phrase.color = `#${document.querySelector(".phrase-color-dropdown").value}`;
-    console.log(meme)
     displayMeme(meme);
   });
   FORM_DIV.appendChild(selectButton);
@@ -592,9 +591,10 @@ function loadMeme(e) {
   title = document.getElementById("title").value;
 
   const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
-  if (picNum === PICTURES.length) {
+  if (picNum >= PICTURES.length) {
     const randNum = Math.floor(Math.random() * PICTURES.length);
     picture = PICTURES[randNum];
+    console.log(randNum);
   } else {
     picture = PICTURES[picNum - 1];
   }

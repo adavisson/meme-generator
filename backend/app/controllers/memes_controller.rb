@@ -5,7 +5,7 @@ class MemesController < ApplicationController
   end
 
   def create
-    meme = Meme.create(title: params[:title], phrase_position: params[:phrase_position], phrase_id: params[:phrase_id], picture_id: params[:picture_id]);
+    meme = Meme.find_or_create_by(title: params[:title], phrase_position: params[:phrase_position], phrase_id: params[:phrase_id], picture_id: params[:picture_id]);
     render json: meme
   end
 end
