@@ -6,7 +6,7 @@ const CONTENT_DIV = document.getElementById("content");
 const FORM_DIV = document.getElementById("form-div");
 const PICTURES = [];
 const PHRASES = [];
-//const MEMES = [];
+const MEMES = [];
 const COLORS = {
   Red: "FF0000",
   Orange: "FFA500",
@@ -21,7 +21,7 @@ const COLORS = {
 /*********************************************
  * Function List:
  *  loadPictures
- *  loadPhrases 
+ *  loadPhrases
  *  loadForm
  *    newPhrase
  *    existingPhrase
@@ -44,7 +44,7 @@ class Picture {
     this._id = id;
   }
 
-  get id(){
+  get id() {
     return this._id;
   }
 }
@@ -55,16 +55,16 @@ class Phrase {
     this.color = `#${color}`;
   }
 
-  set id(id){
+  set id(id) {
     this._id = id;
   }
 
-  get id(){
+  get id() {
     return this._id;
   }
 }
 
-Phrase.prototype.save = function () {
+Phrase.prototype.save = function() {
   let phrase = {
     content: this.content
   };
@@ -77,14 +77,14 @@ Phrase.prototype.save = function () {
     body: JSON.stringify(phrase)
   };
 
-  return fetch (`${PHRASES_URL}`, configObject)
+  return fetch(`${PHRASES_URL}`, configObject)
     .then(resp => resp.json())
     .then(json => {
       this._id = json.id;
       console.log(this);
     })
     .then();
-}
+};
 
 class Meme {
   constructor(title, picture, phrase, phrasePosition) {
@@ -92,6 +92,14 @@ class Meme {
     this.picture = picture; // picture object
     this.phrase = phrase; // phrase object
     this.phrasePosition = phrasePosition; // 1 = top, 2 = bottom
+  }
+
+  set id(id) {
+    this._id = id;
+  }
+
+  get id() {
+    return this._id;
   }
 }
 
@@ -109,12 +117,12 @@ Meme.prototype.save = function() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(meme)
-  }
+  };
 
-  return fetch(`${MEMES_URL}`,configObject)
+  return fetch(`${MEMES_URL}`, configObject)
     .then(resp => resp.json())
     .then(json => console.log(json));
-}
+};
 
 function loadPictures() {
   fetch(`${PICTURES_URL}`)
@@ -133,7 +141,7 @@ function loadPhrases(func) {
     .then(json => {
       for (let i = 0; i < json.length; i++) {
         const phrase = new Phrase(json[i].content);
-        phrase.id = json[i].id
+        phrase.id = json[i].id;
         PHRASES.push(phrase);
       }
     })
@@ -143,7 +151,35 @@ function loadPhrases(func) {
 function loadMemes() {
   fetch(`${MEMES_URL}`)
     .then(resp => resp.json())
-    .then(json => console.log(json));
+    .then(json => {
+      for (let i = 0; i < json.length; i++) {
+        const phrase = getPhrase(json[i].phrase_id);
+        const pic = getPic(json[i].picture_id);
+        const meme = new Meme(
+          json[i].title,
+          pic,
+          phrase,
+          json[i].phrase_position
+        );
+        MEMES.push(meme);
+      }
+    });
+}
+
+function getPhrase(id) {
+  for (let i = 0; i < PHRASES.length; i++) {
+    if (id === PHRASES[i].id) {
+      return PHRASES[i];
+    }
+  }
+}
+
+function getPic(id) {
+  for (let i = 0; i < PICTURES.length; i++) {
+    if (id === PICTURES[i].id) {
+      return PICTURES[i];
+    }
+  }
 }
 
 function loadForm() {
@@ -161,7 +197,7 @@ function loadForm() {
     phraseInput.setAttribute("id", "phrase");
     phraseInput.required = true;
     phraseDiv.appendChild(phraseInput);
-    
+
     const phraseSaveButton = document.createElement("button");
     phraseSaveButton.innerHTML = "Save the Phrase";
     phraseSaveButton.setAttribute("class", "btn btn-primary");
@@ -174,7 +210,7 @@ function loadForm() {
   }
 
   function existingPhrase() {
-    const phraseLabel = document.createElement("label");  // Create phrase label
+    const phraseLabel = document.createElement("label"); // Create phrase label
     phraseLabel.innerHTML = "Choose an existing phrase";
     phraseDiv.appendChild(phraseLabel);
 
@@ -244,7 +280,7 @@ function loadForm() {
   newPhraseButton.innerHTML = "Create a Phrase";
   newPhraseButton.setAttribute("class", "btn btn-primary");
   newPhraseButton.addEventListener("click", e => {
-    while(phraseDiv.firstChild){
+    while (phraseDiv.firstChild) {
       phraseDiv.removeChild(phraseDiv.firstChild);
     }
     newPhrase();
@@ -255,10 +291,10 @@ function loadForm() {
   existingPhraseButton.innerHTML = "Choose Existing Phrase";
   existingPhraseButton.setAttribute("class", "btn btn-primary");
   existingPhraseButton.addEventListener("click", e => {
-    while(phraseDiv.firstChild){
+    while (phraseDiv.firstChild) {
       phraseDiv.removeChild(phraseDiv.firstChild);
     }
-    loadPhrases(existingPhrase)
+    loadPhrases(existingPhrase);
   });
   phraseDiv.appendChild(existingPhraseButton);
 
@@ -332,25 +368,27 @@ function loadMeme(e) {
     const randNum = Math.floor(Math.random() * PICTURES.length);
     picture = PICTURES[randNum];
   } else {
-    picture = PICTURES[picNum - 1]
+    picture = PICTURES[picNum - 1];
   }
 
-  for (let i = 0; i < PHRASES.length; i++){
-    if (PHRASES[i].content === document.getElementById("phrase").value){
+  for (let i = 0; i < PHRASES.length; i++) {
+    if (PHRASES[i].content === document.getElementById("phrase").value) {
       phrase = PHRASES[i];
-      phrase.color = `#${document.querySelector(".phrase-color-dropdown").value}`
+      phrase.color = `#${
+        document.querySelector(".phrase-color-dropdown").value
+      }`;
       break;
     }
   }
-  if (!phrase){
+  if (!phrase) {
     phrase = new Phrase(
       document.getElementById("phrase").value,
       document.querySelector(".phrase-color-dropdown").value
     );
   }
   const phrasePositionElement = document.getElementsByName("textPos");
-  for (let i = 0; i < phrasePositionElement.length; i++){
-    if (phrasePositionElement[i].checked){
+  for (let i = 0; i < phrasePositionElement.length; i++) {
+    if (phrasePositionElement[i].checked) {
       phrasePosition = phrasePositionElement[i].value;
       break;
     }
@@ -360,9 +398,9 @@ function loadMeme(e) {
   displayMeme(meme);
 }
 
-function displayMeme(meme){
+function displayMeme(meme) {
   console.log(meme);
-  deleteChildElements(CONTENT_DIV)
+  deleteChildElements(CONTENT_DIV);
   CONTENT_DIV.removeAttribute("class");
 
   const imgDiv = document.createElement("div"); // Create img-div
@@ -372,10 +410,10 @@ function displayMeme(meme){
   pic.setAttribute("class", "img");
   imgDiv.appendChild(pic);
   fetch(`${PICTURES_URL}/${meme.picture.id}`)
-      .then(resp => resp.json())
-      .then(json => {
-        pic.setAttribute("src", `${json.link}`);
-      });
+    .then(resp => resp.json())
+    .then(json => {
+      pic.setAttribute("src", `${json.link}`);
+    });
 
   const phraseDiv = document.createElement("div");
   console.log(meme.phrase.color);
@@ -388,7 +426,8 @@ function displayMeme(meme){
   saveButton.innerHTML = "Save the Meme!";
   saveButton.setAttribute("class", "btn btn-primary");
   saveButton.addEventListener("click", e => {
-    meme.phrase.save()
+    meme.phrase
+      .save()
       .then(() => meme.save())
       .then(() => alert("Meme Saved"));
   });
@@ -407,8 +446,8 @@ function displayMeme(meme){
   CONTENT_DIV.appendChild(imgDiv);
 }
 
-function deleteChildElements(el){
-  while (el.firstChild){
+function deleteChildElements(el) {
+  while (el.firstChild) {
     el.removeChild(el.firstChild);
   }
 }
