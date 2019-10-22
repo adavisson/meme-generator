@@ -13,7 +13,8 @@ const COLORS = {
   Green: "008000",
   Blue: "0000FF",
   Purple: "800080",
-  Black: "000000"
+  Black: "000000",
+  White: "FFFFFF"
 };
 
 /*********************************************
@@ -29,7 +30,7 @@ const COLORS = {
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", function() {
-  loadPhrases();  // Need to find a way to move this out of here
+  //loadPhrases();  // Need to find a way to move this out of here
 });
 
 class Picture {
@@ -111,14 +112,15 @@ function loadPictures() {
     .then(loadForm);
 }
 
-function loadPhrases() {
+function loadPhrases(func) {
   fetch(`${PHRASES_URL}`)
     .then(resp => resp.json())
     .then(json => {
       for (let i = 0; i < json.length; i++) {
         PHRASES.push(new Phrase(json[i].content));
       }
-    });
+    })
+    .then(func);
 }
 
 function loadForm() {
@@ -126,7 +128,7 @@ function loadForm() {
 
   function newPhrase() {
     const phraseLabel = document.createElement("label"); // Create label for phrase input
-    phraseLabel.innerHTML = "Phill in a Phrase:";
+    phraseLabel.innerHTML = "Fill in a Phrase:";
     phraseDiv.appendChild(phraseLabel);
 
     const phraseInput = document.createElement("input"); // Create phrase input element
@@ -216,7 +218,7 @@ function loadForm() {
     while(phraseDiv.firstChild){
       phraseDiv.removeChild(phraseDiv.firstChild);
     }
-    existingPhrase();
+    loadPhrases(existingPhrase)
   });
   phraseDiv.appendChild(existingPhraseButton);
 
