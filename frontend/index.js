@@ -136,7 +136,7 @@ function loadForm() {
     phraseInput.setAttribute("class", "form-control");
     phraseInput.setAttribute("id", "phrase");
     phraseDiv.appendChild(phraseInput);
-
+    
     const phraseSaveButton = document.createElement("button");
     phraseSaveButton.innerHTML = "Save the Phrase";
     phraseSaveButton.setAttribute("class", "btn btn-primary");
