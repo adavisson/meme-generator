@@ -317,10 +317,19 @@ function loadMeme(e) {
     picture = PICTURES[picNum - 1]
   }
 
-  phrase = new Phrase(
-    document.getElementById("phrase").value,
-    document.querySelector(".phrase-color-dropdown").value
-  );
+  for (let i = 0; i < PHRASES.length; i++){
+    if (PHRASES[i].content === document.getElementById("phrase").value){
+      phrase = PHRASES[i];
+      phrase.color = document.querySelector(".phrase-color-dropdown").value
+      break;
+    }
+  }
+  if (!phrase){
+    phrase = new Phrase(
+      document.getElementById("phrase").value,
+      document.querySelector(".phrase-color-dropdown").value
+    );
+  }
   const phrasePosition = document.getElementsByName("textPos");
 
   const meme = new Meme(title, picture, phrase, phrasePosition);
@@ -328,6 +337,7 @@ function loadMeme(e) {
 }
 
 function displayMeme(meme){
+  console.log(meme);
   deleteChildElements(CONTENT_DIV)
   CONTENT_DIV.removeAttribute("class");
 
