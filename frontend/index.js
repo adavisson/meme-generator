@@ -141,6 +141,7 @@ function loadForm() {
     phraseInput.setAttribute("type", "text");
     phraseInput.setAttribute("class", "form-control");
     phraseInput.setAttribute("id", "phrase");
+    phraseInput.required = true;
     phraseDiv.appendChild(phraseInput);
     
     const phraseSaveButton = document.createElement("button");
@@ -176,6 +177,21 @@ function loadForm() {
   memeForm.setAttribute("action", `${PICTURES_URL}`);
   memeForm.setAttribute("method", "POST");
   memeForm.addEventListener("submit", e => loadMeme(e));
+
+  const titleDiv = document.createElement("div");
+  titleDiv.setAttribute("class", "form-group");
+  memeForm.appendChild(titleDiv);
+
+  const titleLabel = document.createElement("label");
+  titleLabel.innerHTML = "Title:";
+  titleDiv.appendChild(titleLabel);
+
+  const titleInput = document.createElement("input");
+  titleInput.setAttribute("type", "text");
+  titleInput.setAttribute("id", "title");
+  titleInput.setAttribute("class", "form-control");
+  titleInput.required = true;
+  titleDiv.appendChild(titleInput);
 
   const picDiv = document.createElement("div");
   picDiv.setAttribute("class", "form-group");
@@ -292,6 +308,16 @@ function loadMeme(e) {
   deleteChildElements(CONTENT_DIV)
   CONTENT_DIV.removeAttribute("class");
 
+  /***************************
+   * 1. Get Title, Pic, and Phrase
+   * 2. Build a new Meme object
+   * 3. Add save functionality
+   ***************************/
+
+  let title, picture, phrase;
+
+  title = document.getElementById("title").value;
+  
   const imgDiv = document.createElement("div"); // Create img-div
   imgDiv.setAttribute("class", "img-div");
 
@@ -299,21 +325,24 @@ function loadMeme(e) {
   pic.setAttribute("class", "img");
   imgDiv.appendChild(pic);
 
-  const memeNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
-  if (memeNum === "13") {
+  const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
+  if (picNum === "13") {
     const randNum = Math.floor(Math.random() * PICTURES.length);
+    picture = PICTURES[randNum];
     fetch(`${PICTURES_URL}/${PICTURES[randNum].id}`)
       .then(resp => resp.json())
       .then(json => {
         pic.setAttribute("src", `${json.link}`);
       });
   } else {
-    fetch(`${PICTURES_URL}/${memeNum}`)
+    picture = PICTURES[picNum]
+    fetch(`${PICTURES_URL}/${picNum}`)
       .then(resp => resp.json())
       .then(json => {
         pic.setAttribute("src", `${json.link}`);
       });
   }
+  console.log(picture);
 
   /*************************************
    * Get phrase and add it to meme
@@ -321,7 +350,7 @@ function loadMeme(e) {
 
   // Create phrase object
 
-  const phrase = new Phrase(
+  phrase = new Phrase(
     document.getElementById("phrase").value,
     document.querySelector(".phrase-color-dropdown").value
   );
