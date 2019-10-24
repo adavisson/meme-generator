@@ -20,9 +20,15 @@ const COLORS = {
 };
 
 /*********************************************
+ * Class List:
+ *  Picture
+ *  Phrase
+ *  Meme
+ * 
  * Function List:
  *  loadPictures
  *  loadPhrases
+ *  loadCommonPhrases
  *  loadMemes
  *  getPhrase
  *  getPic
@@ -30,12 +36,15 @@ const COLORS = {
  *    newPhrase
  *    existingPhrase
  *    usedPhrases
+ *  pickMemes
+ *  loadExistingMemeForm
  *  loadMeme
  *  displayMeme
  *  deleteChildElements
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", function() {
+  // Go ahead and load all of the phrases and pictures when the app loads
   loadPhrases();  
   loadPictures();
 });
@@ -72,6 +81,7 @@ class Phrase {
 }
 
 Phrase.prototype.save = function() {
+  // Function to save phrase through API with a POST 
   let phrase = {
     content: this.content
   };
@@ -111,6 +121,7 @@ class Meme {
 }
 
 Meme.prototype.save = function() {
+  // Function to save Meme through API with a POST
   let meme = {
     title: this.title,
     phrase_position: this.phrasePosition,
@@ -145,6 +156,8 @@ function loadPictures() {
   // Clear PICTURES Array
   PICTURES.length = 0;
 
+  // GET all of the pictures, create new JS Picture objects and 
+  // load them into PICTURES array
   fetch(`${PICTURES_URL}`)
     .then(resp => resp.json())
     .then(json => {
@@ -158,6 +171,8 @@ function loadPhrases(func) {
   // Clear PHRASES Array
   PHRASES.length = 0;
 
+  // GET all of the phrases, create JS Phrase objects and
+  // load them into PHRASES array
   fetch(`${PHRASES_URL}`)
     .then(resp => resp.json())
     .then(json => {
@@ -174,6 +189,8 @@ function loadCommonPhrases(id){
   // Clear common phrases array
   COMMON_PHRASES.length = 0;
 
+  // GET a user selected picture, load all of the associated 
+  // phrases into PHRASES array
   return fetch(`${PICTURES_URL}/${id}`)
     .then(resp => resp.json())
     .then(json => {
@@ -187,12 +204,14 @@ function loadMemes() {
   // Clear MEMES Array
   MEMES.length = 0;
 
+  // GET all memes, create JS Meme objects and load them
+  // into Memes array
   return fetch(`${MEMES_URL}`)
     .then(resp => resp.json())
     .then(json => {
       for (let i = 0; i < json.length; i++) {
-        const phrase = getPhrase(json[i].phrase_id);
-        const pic = getPic(json[i].picture_id);
+        const phrase = getPhrase(json[i].phrase_id);  // Get phrase object associated with id
+        const pic = getPic(json[i].picture_id); // Get pic object associated with id
         const meme = new Meme(
           json[i].title,
           pic,
@@ -205,6 +224,7 @@ function loadMemes() {
 }
 
 function getPhrase(id) {
+  // Return phrase object with matching id
   for (let i = 0; i < PHRASES.length; i++) {
     if (id === PHRASES[i].id) {
       return PHRASES[i];
@@ -213,6 +233,7 @@ function getPhrase(id) {
 }
 
 function getPic(id) {
+  // Return pic object with matching id
   for (let i = 0; i < PICTURES.length; i++) {
     if (id === PICTURES[i].id) {
       return PICTURES[i];
@@ -225,6 +246,7 @@ function loadForm() {
   deleteChildElements(FORM_DIV);
 
   function newPhrase() {
+    // Loads phraseDiv with form elements for a new phrase
     const existingPhraseButton = document.createElement("button");
     existingPhraseButton.innerHTML = "Choose Existing Phrase";
     existingPhraseButton.setAttribute("class", "btn btn-primary");
@@ -270,6 +292,7 @@ function loadForm() {
   }
 
   function existingPhrase() {
+    // Loads phraseDiv with elements to select from all existing phrases
     const newPhraseButton = document.createElement("button");
     newPhraseButton.innerHTML = "Create a Phrase";
     newPhraseButton.setAttribute("class", "btn btn-primary");
@@ -309,6 +332,7 @@ function loadForm() {
   }
 
   function usedPhrases() {
+    // Loads phraseDiv with form elements to select from common phrases
     const newPhraseButton = document.createElement("button");
     newPhraseButton.innerHTML = "Create a Phrase";
     newPhraseButton.setAttribute("class", "btn btn-primary");
@@ -343,7 +367,7 @@ function loadForm() {
     phraseDiv.appendChild(document.createElement("br"));
 
     let picNum = document.querySelector(".meme-dropdown").value;
-    if (picNum >= PICTURES.length){
+    if (picNum > PICTURES.length){
       alert("Choose a picture other than random.");
     } else {
       loadCommonPhrases(picNum)
@@ -371,7 +395,7 @@ function loadForm() {
   memeForm.setAttribute("method", "POST");
   memeForm.addEventListener("submit", e => loadMeme(e));
 
-  const existingMemeButton = document.createElement("button");
+  const existingMemeButton = document.createElement("button");  // Button to load existling meme elements
   existingMemeButton.setAttribute("class", "btn btn-primary");
   existingMemeButton.innerHTML = "Pick an existing meme!";
   existingMemeButton.addEventListener("click", e => {
@@ -383,6 +407,7 @@ function loadForm() {
   memeForm.appendChild(document.createElement("br"));
   memeForm.appendChild(document.createElement("br"));
 
+  ////////////// Title ///////////////
   const titleDiv = document.createElement("div");
   titleDiv.setAttribute("class", "form-group");
   memeForm.appendChild(titleDiv);
@@ -398,6 +423,7 @@ function loadForm() {
   titleInput.required = true;
   titleDiv.appendChild(titleInput);
 
+  ////////////// Picture Selection ///////////////
   const picDiv = document.createElement("div");
   picDiv.setAttribute("class", "form-group");
   memeForm.appendChild(picDiv);
@@ -423,6 +449,7 @@ function loadForm() {
   }
   picDiv.appendChild(picDropdown);
 
+  ////////////// Phrase Selection ///////////////
   const phraseDiv = document.createElement("div");
   phraseDiv.setAttribute("class", "form-group");
   memeForm.appendChild(phraseDiv);
@@ -454,6 +481,7 @@ function loadForm() {
   });
   phraseDiv.appendChild(popularPhraseButton);
 
+  ////////////// Phrase color selection ///////////////
   const phraseColorDiv = document.createElement("div");
   phraseColorDiv.setAttribute("class", "form-group");
   memeForm.appendChild(phraseColorDiv);
@@ -475,6 +503,7 @@ function loadForm() {
   }
   phraseColorDiv.appendChild(phraseColorDropdown);
 
+  ////////////// Phrase position selection ///////////////
   const textPositionDiv = document.createElement("div");
   textPositionDiv.setAttribute("class", "form-group");
   memeForm.appendChild(textPositionDiv);
@@ -514,14 +543,15 @@ function loadForm() {
 }
 
 function pickMemes(){
+  // Get all memes and then load the Existing meme elements
   loadMemes()
     .then(loadExistingMemeForm);
 }
 
 function loadExistingMemeForm() {
-  deleteChildElements(FORM_DIV);
+  deleteChildElements(FORM_DIV);  // Remove all elements from FORM_DIV
 
-  //<button class="btn btn-primary" onclick="loadForm()">Create a Meme!</button>
+  // Button to load new meme form
   const createMemeButton = document.createElement("button");
   createMemeButton.setAttribute("class", "btn btn-primary");
   createMemeButton.innerHTML = "Create a New Meme!";
@@ -534,6 +564,7 @@ function loadExistingMemeForm() {
   FORM_DIV.appendChild(document.createElement("br"));
   FORM_DIV.appendChild(document.createElement("br"));
 
+  ////////////// Existing meme selection ///////////////
   const selectMemeDiv = document.createElement("div");
   selectMemeDiv.setAttribute("class", "form-group")
   FORM_DIV.appendChild(selectMemeDiv);
@@ -552,6 +583,7 @@ function loadExistingMemeForm() {
   }
   selectMemeDiv.appendChild(selectMemeDropDown);
 
+  ////////////// Phrase color selection ///////////////
   const phraseColorDiv = document.createElement("div");
   phraseColorDiv.setAttribute("class", "form-group");
   FORM_DIV.appendChild(phraseColorDiv);
@@ -585,13 +617,15 @@ function loadExistingMemeForm() {
 }
 
 function loadMeme(e) {
+  // Get values from form elements and create new JS Meme object
+
   e.preventDefault(); // Prevent form from default action of submitting to /pictures
   let title, picture, phrase, phrasePosition;
 
   title = document.getElementById("title").value;
 
   const picNum = document.querySelector(".meme-dropdown").value; // Load selected picture with fetch call
-  if (picNum >= PICTURES.length) {
+  if (picNum > PICTURES.length) {
     const randNum = Math.floor(Math.random() * PICTURES.length);
     picture = PICTURES[randNum];
     console.log(randNum);
@@ -627,6 +661,8 @@ function loadMeme(e) {
 }
 
 function displayMeme(meme) {
+  // Display the meme using all of the user selections
+
   deleteChildElements(CONTENT_DIV);
   CONTENT_DIV.removeAttribute("class");
 
