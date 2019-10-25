@@ -152,6 +152,52 @@ Meme.prototype.save = function() {
     });
 }
 
+function sortPics() {
+  // items.sort(function(a, b) {
+  //   var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+  //   var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+  //   if (nameA < nameB) {
+  //     return -1;
+  //   }
+  //   if (nameA > nameB) {
+  //     return 1;
+  //   }
+  
+    // // names must be equal
+    // return 0;
+
+  fetch(`${PICTURES_URL}`)
+    .then(resp => resp.json())
+    .then(json => {
+      json.sort(function(a,b){
+        let titleA = a.title.toLowerCase();
+        let titleB = b.title.toLowerCase();
+        if (titleA < titleB){
+          return -1;
+        } else if (titleA > titleB) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      console.log(json);
+      displayTitles(json);
+    });
+}
+
+function displayTitles(json){
+  const listDiv = document.getElementById("sortedList");
+
+  const ulList = document.createElement("ul");
+  listDiv.appendChild(ulList);
+
+  for (let i = 0; i < json.length; i++) {
+    const li = document.createElement("li");
+    li.innerHTML = `${json[i].title}`;
+    ulList.appendChild(li);
+  }
+}
+
 function loadPictures() {
   // Clear PICTURES Array
   PICTURES.length = 0;

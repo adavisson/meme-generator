@@ -61,3 +61,11 @@ Shut Up and Take My Money Fry - https://imgflip.com/s/meme/Shut-Up-And-Take-My-M
 Fry - HERE!
 Ancient - Whoa
 Fry - Take My Money!
+
+
+Notes
+------
+- Should end all promise chains with a catch
+- What is better practice: promise chain or async/await functions
+- var gets hoisted
+- let does not get hoisted
