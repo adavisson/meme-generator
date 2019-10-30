@@ -6,8 +6,4 @@ generate different memes.
 - Copy the repository to your computer
 - Change into the /backend folder and run `bundle install`
 - Start the Rails app with `rails s`
-<<<<<<< HEAD
 - Change into the /frontend folder and open 'index.html'
-=======
-- Change into the /frontend folder and open 'index.html'
->>>>>>> d4e02c3dabfb98d00902a788e1391ee553856fe5
