@@ -1,6 +1,6 @@
 # meme-generator
 Rails-Js Portfolio Project: This is a single page app that allows a user to 
-generate different memes.
+generate different memes. A demo video can be found here: https://youtu.be/K3aA57BwPM0
 
 ## How to Use
 - Copy the repository to your computer
