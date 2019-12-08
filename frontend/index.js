@@ -43,10 +43,10 @@ const COLORS = {
  *  deleteChildElements
  *********************************************/
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   // Go ahead and load all of the phrases and pictures when the app loads
   loadPhrases();  
-  loadPictures();
+  await loadPictures();
 });
 
 class Picture {
@@ -198,19 +198,28 @@ function displayTitles(json){
   }
 }
 
-function loadPictures() {
+async function loadPictures() {
   // Clear PICTURES Array
   PICTURES.length = 0;
 
   // GET all of the pictures, create new JS Picture objects and 
   // load them into PICTURES array
-  fetch(`${PICTURES_URL}`)
-    .then(resp => resp.json())
-    .then(json => {
-      for (let i = 0; i < json.length; i++) {
-        PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
-      }
-    });
+  // fetch(`${PICTURES_URL}`)
+    // .then(resp => resp.json())
+    // .then(json => {
+      // for (let i = 0; i < json.length; i++) {
+        // PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
+      // }
+    // });
+
+  // Async
+
+  const result = await fetch(PICTURES_URL);
+  const json = await result.json();
+  for (let i = 0; i < json.length; i++) {
+    PICTURES.push(new Picture(json[i].id, json[i].title, json[i].link));
+  }
+
 }
 
 function loadPhrases(func) {
