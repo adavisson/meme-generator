@@ -87,3 +87,9 @@ body h2 {
   bottom: 35px;
   font-size: 400%;
 }
+
+#longestWord {
+  margin: 25px;
+  padding: 25px;
+  border: 2px solid purple;
+}

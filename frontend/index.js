@@ -44,10 +44,70 @@ const COLORS = {
  *********************************************/
 
 document.addEventListener("DOMContentLoaded", async function() {
+  // Code for longest word function
+  longestWord();
+  
   // Go ahead and load all of the phrases and pictures when the app loads
   loadPhrases();  
   await loadPictures();
 });
+
+function longestWord () {
+
+  function findWord() {
+    if (document.getElementById("long-word")){
+      const el = document.getElementById("long-word");
+      divEl.removeChild(el);
+    }
+
+    const sentence = document.getElementById("wordString").value;
+    const wordArray = sentence.split(' ');
+    let length = 0;
+    let word = "";
+
+    for(let i = 0; i < wordArray.length; i++){
+      if(wordArray[i].length > length){
+        word = wordArray[i];
+        length = wordArray[i].length;
+      }
+    }
+    console.log(word)
+
+    const p = document.createElement("p");
+    p.innerHTML = "Longest word: " + word;
+    p.setAttribute("id", "long-word");
+
+    divEl.appendChild(p);
+  }
+
+  const divEl = document.getElementById('longestWord');
+  const formEl = document.createElement("form");
+  formEl.addEventListener("submit", e => {
+    e.preventDefault();
+    findWord();
+  });
+
+  const textLabel = document.createElement("label");
+  textLabel.innerHTML = "Enter a word string: ";
+
+  const textInput = document.createElement("input");
+  textInput.setAttribute("type", "text");
+  textInput.setAttribute("id", "wordString");
+
+  const submitButton = document.createElement("input");
+  submitButton.setAttribute("type", "submit");
+  submitButton.setAttribute("value", "Find longest word");
+  submitButton.setAttribute("class", "btn btn-primary");
+
+  formEl.appendChild(textLabel);
+  formEl.appendChild(textInput);
+  formEl.appendChild(document.createElement("br"));
+  formEl.appendChild(document.createElement("br"));
+  formEl.appendChild(submitButton);
+  divEl.appendChild(formEl);
+  divEl.appendChild(document.createElement("br"));
+  divEl.appendChild(document.createElement("br"));
+}
 
 class Picture {
   constructor(id, title, link) {
